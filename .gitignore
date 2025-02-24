@@ -1,3 +1,8 @@
 build/*
+compile_test.sh
+test/*
 compile_commands.json
+compile_flags.txt
+.debugconfig
+
 
