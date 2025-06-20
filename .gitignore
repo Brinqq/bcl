@@ -4,5 +4,6 @@ test/*
 compile_commands.json
 compile_flags.txt
 .debugconfig
+.cache
 
 
