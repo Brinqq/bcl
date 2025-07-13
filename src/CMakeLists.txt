@@ -4,7 +4,7 @@ project(bl)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(src_files 
-"scratchallocator.cpp"
+"linearallocator.cpp"
 )
 
 set(include_dirs "include")

@@ -3,7 +3,7 @@
 #include "stdint.h"
 namespace bl{
 
-class ScratchAlloc{
+class LinearAlloc{
 private:
   void* sp;
   void* ep;

@@ -1,4 +1,4 @@
-#include "bl/memory/scratchallocator.h"
+#include "bl/memory/linearallocator.h"
 
 #include <stdint.h>
 
@@ -8,31 +8,31 @@ typedef char* byte;
 // TODO: add alignment
 
 namespace bl{
-void ScratchAlloc::set(void* pMemory, uint64_t bytes){
+void LinearAlloc::set(void* pMemory, uint64_t bytes){
   //TODO: Assert here
   sp = pMemory; 
   ip = pMemory;
   ep = (byte)pMemory + bytes;
 }
 
-void* ScratchAlloc::tryAlloc(uint64_t bytes){
+void* LinearAlloc::tryAlloc(uint64_t bytes){
   if(!canAlloc(bytes)){return nullptr;}
   void* ret = ip;
   ip = (byte)ip + bytes;
   return ret;
 }
 
-void* ScratchAlloc::alloc(uint64_t bytes){
+void* LinearAlloc::alloc(uint64_t bytes){
   void* ret = ip;
   ip = (byte)ip + bytes;
   return ret;
 }
 
-void ScratchAlloc::reset(){
+void LinearAlloc::reset(){
   ip = sp;
 }
 
-bool ScratchAlloc::canAlloc(const uint64_t bytes){
+bool LinearAlloc::canAlloc(const uint64_t bytes){
   if(((byte)sp + bytes) > (byte)ep){return false;}
   return true;
 }
