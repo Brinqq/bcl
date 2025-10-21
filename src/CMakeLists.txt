@@ -6,17 +6,13 @@ set(SRC_FILES
     virtualallocator.cpp
 )
 
-
-
 set(CMAKE_CXX_STANDARD 20)
 
 option(CHECK_INLINE "enables debug inline checking utils" OFF)
 
-
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
 endif()
-
 
 set(INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include")
 set(ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/..")
@@ -29,28 +25,35 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${BIN_DIR})
 
 set(CXX_FLAGS "-Wall" "-mavx" "-mavx2")
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+#platform specific
+if (WIN32)
+  if(MSVC OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND CMAKE_BUILD_TYPE STREQUAL "Debug")
+        # Clang-MSVC: emit CodeView (PDB) debug info
+        list(APPEND CXX_FLAGS -gcodeview)
+  endif()
+endif()
 
+
+if (APPLE)
+  if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    # Other compilers: DWARF debug info
+    list(APPEND CXX_FLAGS -g3)
+  endif()
+endif()
+ 
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   if(CHECK_INLINE)
     message("Debug inline information enabled.")
     list(APPEND CXX_FLAGS -finline-functions)
     list(APPEND CXX_FLAGS -Rpass=inline)
   endif()
-
     list(APPEND SRC_FILES ../test/test.cpp)
     list(APPEND CXX_FLAGS "-O0")
-
-    if(MSVC OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-        # Clang-MSVC: emit CodeView (PDB) debug info
-        list(APPEND CXX_FLAGS -gcodeview)
-    else()
-        # Other compilers: DWARF debug info
-        list(APPEND CXX_FLAGS -g3)
-    endif()
     add_executable(${PROJECT_NAME} ${SRC_FILES})
 else()
   add_library(${PROJECT_NAME} STATIC ${SRC_FILES})
-    set(CXX_FLAGS "${CXX_FLAGS} -O2")
+  set(CXX_FLAGS "${CXX_FLAGS} -O2")
 endif()
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRS})
