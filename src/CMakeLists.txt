@@ -60,8 +60,8 @@ else()
   set(CXX_FLAGS "${CXX_FLAGS} -O2")
 endif()
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRS})
-target_compile_options(${PROJECT_NAME} PRIVATE ${CXX_FLAGS})
+target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIRS})
+target_compile_options(${PROJECT_NAME} PUBLIC ${CXX_FLAGS})
 
 # if(CMAKE_BUILD_TYPE STREQUAL "Debug" AND (MSVC OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang"))
 #     target_link_options(${PROJECT_NAME} PRIVATE /DEBU
