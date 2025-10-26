@@ -1,7 +1,7 @@
 #pragma once
+#include <cstdlib>
 
 #if _WIN32
-#include <cstdlib>
 #endif
 
 //Note: Specified alignment must be a power of 2.
@@ -23,7 +23,7 @@ inline void* AlignedAlloc(size_t size, size_t align){
   #if _WIN32
     return _aligned_malloc(size, align);
   #else
-  return std::aligned_alloc(align, size)
+  return std::aligned_alloc(align, size);
   #endif
  }
 
@@ -31,7 +31,7 @@ inline void AlignedFree(void* mem){
  #if _WIN32
   return _aligned_free(mem);
  #else
-  return std::aligned_free(mem)
+  return std::free(mem);
  #endif
  }
 

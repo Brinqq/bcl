@@ -2,10 +2,12 @@
 #include "bl/memory/memory.h"
 #include "bl/assert.h"
 
-#include <windows.h>
 #include <stdio.h>
 
 #if defined(_WIN32)
+
+#include <windows.h>
+
 static uint32_t sysk_page_size(){
   static uint32_t page_cached = 0;
   if(page_cached == 0){
@@ -47,6 +49,41 @@ static int sysk_commit(const size_t pages){
 
 static int sysk_uncommit(void* addr, const size_t pages){
   VirtualFree(addr, sysk_page_size() * pages, MEM_DECOMMIT);
+  return 0;
+};
+
+#endif
+
+#if defined(__APPLE__)
+#include <cstdlib>
+static uint32_t sysk_page_size(){
+  std::abort();
+  return 1;
+}
+
+static uint32_t sysk_heap_size(){
+  std::abort();
+  return 1;
+};
+
+static void* sysk_reserve(void* addr, const size_t pages){
+  std::abort();
+  return nullptr;
+};
+
+static void* sysk_alloc_heaps(const uint32_t count){
+  std::abort();
+  return nullptr;
+};
+
+static int sysk_commit(const size_t pages){
+  std::abort();
+  return 0;
+};
+
+
+static int sysk_uncommit(void* addr, const size_t pages){
+  std::abort();
   return 0;
 };
 
@@ -158,7 +195,7 @@ void virtual_allocator::free(void* addr){
 
 void* virtual_allocator::reserve_memory(const size_t bytes){
   void* addr;
-  void* ret;
+  void* ret = nullptr;
   size_t aligned_bytes = align_p2(bytes, sysk_page_size());
 
   // on first alloc flist is always nullptr. so on init we construct_base()

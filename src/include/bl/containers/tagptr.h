@@ -6,9 +6,8 @@
 #include <stdint.h>
 
 
-// Not thread safe.
-
-#if !defined(__x86_64__) || !defined(__amd64__)
+#if defined(__x86_64__) || defined(__arm64__)
+#else
 #error "Unnkown CPU architecture, can not guarantee tagging compatibiliy."
 #endif
 
@@ -16,7 +15,6 @@ static_assert(sizeof(uintptr_t) == 8, "64bit compilation is required for pointer
 
 
 #if defined(_WIN32)
-
 #elif defined(_LINUX) || defined(__unix__)
 #elif defined(__APPLE__)
 #else
