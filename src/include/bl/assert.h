@@ -17,6 +17,8 @@ inline void _assertion_failure(const char* file , const uint32_t line, const cha
 #define _bclassert_msg(_expr, _msg) if(!(_expr)){_assertion_failure(__FILE__, __LINE__, _msg);}
 #define _bclassert_tag(_expr, _tag) if(!(_expr)){_assertion_failure(__FILE__, __LINE__, nullptr, _tag);}
 #else
-_bclassert(_expr)
+#define _bclassert(_expr)
+#define _bclassert_msg(_expr, _msg)
+#define _bclassert_tag(_expr, _tag)
 #endif
 
