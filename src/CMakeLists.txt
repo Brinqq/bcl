@@ -23,10 +23,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${BIN_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${BIN_DIR})
 
-set(CXX_FLAGS "-Wall" "-mavx" "-mavx2")
+set(CXX_FLAGS "-Wall")
+
+
 
 #platform specific
 if (WIN32)
+  list(APPEND CXX_FLAGS "-mavx" "-mavx2")
   if(MSVC OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND CMAKE_BUILD_TYPE STREQUAL "Debug")
         # Clang-MSVC: emit CodeView (PDB) debug info
         list(APPEND CXX_FLAGS -gcodeview)
@@ -49,6 +52,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     list(APPEND CXX_FLAGS -Rpass=inline)
   endif()
     list(APPEND SRC_FILES ../test/test.cpp)
+    list(APPEND INCLUDE_DIRS "${ROOT_DIR}/test/headers/doctest")
     list(APPEND CXX_FLAGS "-O0")
     add_executable(${PROJECT_NAME} ${SRC_FILES})
 else()
