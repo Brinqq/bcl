@@ -1,0 +1,40 @@
+\doxysection{bcl\+::dense\+\_\+table\+\_\+traits\texorpdfstring{$<$}{<} \+\_\+\+Type, \+\_\+\+Key\+\_\+type, \+\_\+\+Generation, \+\_\+\+Start\+\_\+capacity \texorpdfstring{$>$}{>} Struct Template Reference}
+\hypertarget{structbcl_1_1dense__table__traits}{}\label{structbcl_1_1dense__table__traits}\index{bcl::dense\_table\_traits$<$ \_Type, \_Key\_type, \_Generation, \_Start\_capacity $>$@{bcl::dense\_table\_traits$<$ \_Type, \_Key\_type, \_Generation, \_Start\_capacity $>$}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structbcl_1_1dense__table__traits_a69863d859b75d1fefa1011d317692319}\label{structbcl_1_1dense__table__traits_a69863d859b75d1fefa1011d317692319} 
+typedef size\+\_\+t {\bfseries size\+\_\+type}
+\item 
+\Hypertarget{structbcl_1_1dense__table__traits_afae406f1cb0c6383598f3d05f92a8a75}\label{structbcl_1_1dense__table__traits_afae406f1cb0c6383598f3d05f92a8a75} 
+typedef \+\_\+\+Key\+\_\+type {\bfseries key\+\_\+type}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structbcl_1_1dense__table__traits_aeb9065bbdfd4e27e67a35b00f2a641ce}\label{structbcl_1_1dense__table__traits_aeb9065bbdfd4e27e67a35b00f2a641ce} 
+static \+\_\+\+BCLCONSTEXPR11 size\+\_\+t {\bfseries start\+\_\+capacity} = \+\_\+\+Start\+\_\+capacity
+\item 
+\Hypertarget{structbcl_1_1dense__table__traits_abd6878d27eb8abc40e0ba659c8e46e11}\label{structbcl_1_1dense__table__traits_abd6878d27eb8abc40e0ba659c8e46e11} 
+static \+\_\+\+BCLCONSTEXPR11 bool {\bfseries gen} = \+\_\+\+Generation
+\item 
+\Hypertarget{structbcl_1_1dense__table__traits_a0d00e8e9f85fa67d0d24479255117a0d}\label{structbcl_1_1dense__table__traits_a0d00e8e9f85fa67d0d24479255117a0d} 
+static \+\_\+\+BCLCONSTEXPR11 size\+\_\+t {\bfseries max\+\_\+size} = static\+\_\+cast$<$size\+\_\+t$>$(std\+::numeric\+\_\+limits$<$\+\_\+\+Key\+\_\+type$>$\+::max())
+\item 
+\Hypertarget{structbcl_1_1dense__table__traits_ab81c1b8e1a8a5848f95d40e6cae6cc28}\label{structbcl_1_1dense__table__traits_ab81c1b8e1a8a5848f95d40e6cae6cc28} 
+static \+\_\+\+BCLCONSTEXPR11 bool {\bfseries movable} = std\+::is\+\_\+move\+\_\+assignable\+\_\+v$<$\+\_\+\+Type$>$ \&\& std\+::is\+\_\+move\+\_\+constructible\+\_\+v$<$\+\_\+\+Type$>$
+\item 
+\Hypertarget{structbcl_1_1dense__table__traits_a93a5d515235b81b17c60941eb0acb14a}\label{structbcl_1_1dense__table__traits_a93a5d515235b81b17c60941eb0acb14a} 
+static \+\_\+\+BCLCONSTEXPR11 bool {\bfseries copyable} = std\+::is\+\_\+copy\+\_\+constructible\+\_\+v$<$\+\_\+\+Type$>$ \&\& std\+::is\+\_\+copy\+\_\+assignable\+\_\+v$<$\+\_\+\+Type$>$
+\item 
+\Hypertarget{structbcl_1_1dense__table__traits_a6e0c4ab36310be4c47dabba89676afe8}\label{structbcl_1_1dense__table__traits_a6e0c4ab36310be4c47dabba89676afe8} 
+static \+\_\+\+BCLCONSTEXPR11 bool {\bfseries assignable} = std\+::is\+\_\+assignable\+\_\+v$<$\+\_\+\+Type, \+\_\+\+Type$>$ \texorpdfstring{$\vert$}{|}\texorpdfstring{$\vert$}{|} std\+::is\+\_\+trivially\+\_\+assignable\+\_\+v$<$\+\_\+\+Type, \+\_\+\+Type$>$
+\item 
+\Hypertarget{structbcl_1_1dense__table__traits_ac0ee702486c2b4aecdca5e87b991c38d}\label{structbcl_1_1dense__table__traits_ac0ee702486c2b4aecdca5e87b991c38d} 
+static \+\_\+\+BCLCONSTEXPR11 bool {\bfseries memcpyable} = std\+::is\+\_\+trivially\+\_\+copyable\+\_\+v$<$\+\_\+\+Type$>$
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/brinq/.\+dev/projects/bcl/src/include/bl/containers/densetable.\+h\end{DoxyCompactItemize}

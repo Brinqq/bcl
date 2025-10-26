@@ -1,0 +1,178 @@
+\doxysection{sparsearray.\+h}
+\hypertarget{sparsearray_8h_source}{}\label{sparsearray_8h_source}\index{/Users/brinq/.dev/projects/bcl/src/include/bl/containers/sparsearray.h@{/Users/brinq/.dev/projects/bcl/src/include/bl/containers/sparsearray.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}freelist.h"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{keyword}{namespace\ }bl\{}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_Type,\ u\textcolor{keywordtype}{int}32\_t\ \_PoolSize\ =\ 20,\ \textcolor{keyword}{typename}\ \_Allocator\ =\ std::allocator<\_Type>>}
+\DoxyCodeLine{00009\ \textcolor{keyword}{class\ }SparseArray\ :\ \textcolor{keyword}{public}\ std::allocator<\_Type>\{}
+\DoxyCodeLine{00010\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00011\ \ \ \textcolor{keyword}{struct\ }Node\{}
+\DoxyCodeLine{00012\ \ \ \ \ \_Type\ type;}
+\DoxyCodeLine{00013\ \ \ \};}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \ \ \_Type*\ pStart;}
+\DoxyCodeLine{00016\ \ \ \_Type*\ pEnd;}
+\DoxyCodeLine{00017\ \ \ \mbox{\hyperlink{classbl_1_1sk_freelist}{skFreelist<\_Type*>}}\ freelist;}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \ \ \textcolor{keywordtype}{void}\ Alloc(\textcolor{keywordtype}{size\_t}\ size)\{}
+\DoxyCodeLine{00020\ \ \ \ \ pStart\ =\ this-\/>allocate(\_PoolSize);}
+\DoxyCodeLine{00021\ \ \ \}}
+\DoxyCodeLine{00022\ \ \ }
+\DoxyCodeLine{00023\ \ \ \textcolor{keywordtype}{void}\ Construct(\_Type*\ handle)\{}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keyword}{new}(handle)\ \_Type();}
+\DoxyCodeLine{00025\ \ \ \}}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \ \ \textcolor{keywordtype}{void}\ Deconstruct(\_Type*\ handle)\{}
+\DoxyCodeLine{00028\ \ \ \ \ *handle\ =\ \string~\_Type();}
+\DoxyCodeLine{00029\ \ \ \}}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \textcolor{keywordtype}{void}\ Dealloc()\{}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \textcolor{keywordtype}{void}\ Grow()\{}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \}}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ SparseArray()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00043\ \ \ SparseArray(\textcolor{keyword}{const}\ SparseArray\&\ other)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00044\ \ \ SparseArray(SparseArray\&\&\ other)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \ \ \_Type*\ Begin()\{\textcolor{keywordflow}{return}\ pStart;\}}
+\DoxyCodeLine{00047\ \ \ \_Type*\ End()\{\textcolor{keywordflow}{return}\ pEnd;\}}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \ \textcolor{comment}{//\ frees\ the\ slot\ at\ the\ given\ handle\ index.}}
+\DoxyCodeLine{00050\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00051\ \ \ \textcolor{comment}{//\ @params[in]\ \_Type*\ -\/\ original\ handle\ recived\ from\ push().}}
+\DoxyCodeLine{00052\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00053\ \ \ \textcolor{keywordtype}{void}\ Remove(\_Type*\ handle)\{}
+\DoxyCodeLine{00054\ \ \ \ \ deconstruct(handle);}
+\DoxyCodeLine{00055\ \ \ \ \ freelist.New(handle);}
+\DoxyCodeLine{00056\ \ \ \}}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \textcolor{comment}{//\ Pushes\ a\ value\ into\ the\ next\ free\ slot}}
+\DoxyCodeLine{00059\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00060\ \ \ \textcolor{comment}{//\ @param[in]\ \_Type\&\&\ -\/\ rvalue\ reference\ to\ be\ placed\ in\ the\ next\ free\ slot\ of\ the\ array.}}
+\DoxyCodeLine{00061\ \ \ \textcolor{comment}{//\ @returns\ \_Type*\ -\/\ \ a\ stable\ handle\ into\ the\ array.}}
+\DoxyCodeLine{00062\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00063\ \ \ \_Type*\ Push(\_Type\&\&\ type)\{}
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keywordflow}{if}(pStart\ ==\ \textcolor{keyword}{nullptr})\{}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ Alloc(\_PoolSize);}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ pEnd\ =\ pStart\ +\ \_PoolSize;}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \_Type*\ itr\ =\ pEnd\ -\/\ 1;}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ x\ =\ 0;}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \textcolor{keywordflow}{while}(itr\ >=\ pStart)\{}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}loop\ \%i:\ itr:\ \%p\ -\/\ pStart:\ \%p\(\backslash\)n"{}},x,\ itr,\ pStart);}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ freelist.New(itr);}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ itr-\/-\/;}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ x++;}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00076\ \ \ \ \ \}}
+\DoxyCodeLine{00077\ \ \ \ \ }
+\DoxyCodeLine{00078\ \ \ \ \ \textcolor{keywordflow}{if}(freelist.Empty())\{}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}freelist\ empty\(\backslash\)n"{}});}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00081\ \ \ \ \ \}}
+\DoxyCodeLine{00082\ \ \ \ \ }
+\DoxyCodeLine{00083\ \ \ \ \ \_Type*\ ret\ =\ freelist.Get().value();\ }
+\DoxyCodeLine{00084\ \ \ \ \ *ret\ =\ type;}
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keywordflow}{return}\ ret;}
+\DoxyCodeLine{00086\ \ \ \}}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \ \ \textcolor{comment}{//\ Pushes\ a\ value\ into\ the\ next\ free\ slot}}
+\DoxyCodeLine{00089\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00090\ \ \ \textcolor{comment}{//\ @param[in]\ \_Type\&\ -\/\ lvalue\ reference\ to\ be\ placed\ in\ the\ next\ free\ slot\ of\ the\ array.}}
+\DoxyCodeLine{00091\ \ \ \textcolor{comment}{//\ @returns\ \_Type*\ -\/\ \ a\ stable\ handle\ into\ the\ array.}}
+\DoxyCodeLine{00092\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00093\ \ \ \_Type*\ Push(\_Type\&\ type)\{}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keywordflow}{if}(pStart\ ==\ \textcolor{keyword}{nullptr})\{}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ Alloc(\_PoolSize);}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ pEnd\ =\ pStart\ +\ \_PoolSize;}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \_Type*\ itr\ =\ pEnd\ -\/\ 1;}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \textcolor{keywordflow}{while}(itr\ >=\ pStart)\{}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ freelist.New(itr);}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ itr-\/-\/;}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00103\ \ \ \ \ \};}
+\DoxyCodeLine{00104\ \ \ \ \ }
+\DoxyCodeLine{00105\ \ \ \ \ \textcolor{keywordflow}{if}(freelist.Empty())\{}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}freelist\ empty\(\backslash\)n"{}});}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \textcolor{comment}{//resize}}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00109\ \ \ \ \ \}}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \ \ \ \ \_Type*\ ret\ =\ freelist.Get().value();\ }
+\DoxyCodeLine{00112\ \ \ \ \ *ret\ =\ type;}
+\DoxyCodeLine{00113\ \ \ \ \ \textcolor{keywordflow}{return}\ ret;}
+\DoxyCodeLine{00114\ \ \ \}}
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ \textcolor{comment}{//\ Reserves\ bytes\ to\ fit\ sizeof(\_Type)\ *\ size.}}
+\DoxyCodeLine{00118\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00119\ \ \ \textcolor{comment}{//\ @param[in]\ size\ -\/\ max\ elements\ that\ can\ fit\ in\ the\ array.}}
+\DoxyCodeLine{00120\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00121\ \ \ \textcolor{keywordtype}{void}\ Reserve(uint32\_t\ size)\{}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ \ \ \}}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \ \ \textcolor{comment}{//\ Checks\ if\ the\ handle\ is\ valid.}}
+\DoxyCodeLine{00126\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00127\ \ \ \textcolor{comment}{//\ @param[in]\ handle\ -\/\ \ the\ handle\ that\ is\ checked.}}
+\DoxyCodeLine{00128\ \ \ \textcolor{comment}{//\ @returns\ boolean\ representing\ the\ current\ state\ of\ the\ handle;}}
+\DoxyCodeLine{00129\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00130\ \ \ \textcolor{keywordtype}{bool}\ IsValid(\_Type*\ handle)\{}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \ \ \}}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ }
+\DoxyCodeLine{00135\ \ \ \textcolor{comment}{//\ Total\ number\ of\ elements\ in\ the\ array.}}
+\DoxyCodeLine{00136\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00137\ \ \ \textcolor{comment}{//\ @returns\ number\ of\ elements.}}
+\DoxyCodeLine{00138\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00139\ \ \ uint32\_t\ size()\{}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \ \ \}}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \ \ }
+\DoxyCodeLine{00144\ \ \ \textcolor{comment}{//\ Max\ elements\ the\ containter\ can\ hold\ at\ once.}}
+\DoxyCodeLine{00145\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00146\ \ \ \textcolor{comment}{//\ @returns\ max\ number\ elements.}}
+\DoxyCodeLine{00147\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00148\ \ \ uint32\_t\ MaxSize()\{}
+\DoxyCodeLine{00149\ }
+\DoxyCodeLine{00150\ \ \ \}}
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00152\ \ \ \textcolor{comment}{//\ Attempts\ to\ defragment\ any\ empty\ pool\ pages.}}
+\DoxyCodeLine{00153\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00154\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00155\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00156\ \ \ \textcolor{keywordtype}{void}\ Shrink()\{}
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00158\ \ \ \}}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00160\ \ \ \textcolor{comment}{//\ Removes\ all\ elements\ in\ the\ container\ and\ shrinks\ back\ to\ minimum\ size}}
+\DoxyCodeLine{00161\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00162\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00163\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00164\ \ \ \textcolor{keywordtype}{void}\ clear()\{}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \ \ \}}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00168\ \ \ }
+\DoxyCodeLine{00169\ }
+\DoxyCodeLine{00170\ \};}
+\DoxyCodeLine{00171\ }
+\DoxyCodeLine{00172\ \}}
+
+\end{DoxyCode}

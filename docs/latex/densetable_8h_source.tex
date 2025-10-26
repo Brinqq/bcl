@@ -1,0 +1,255 @@
+\doxysection{densetable.\+h}
+\hypertarget{densetable_8h_source}{}\label{densetable_8h_source}\index{/Users/brinq/.dev/projects/bcl/src/include/bl/containers/densetable.h@{/Users/brinq/.dev/projects/bcl/src/include/bl/containers/densetable.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}bl/features.h"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}bl/assert.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}bl/containers/freelist.h"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <limits>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{keyword}{namespace\ }bcl\{}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ TODO:\ add\ generation\ support\ off\ by\ default.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ TODO:\ switch\ to\ compact\ vectors\ that\ scale\ based\ on\ dense\ table\ containers\ max\ width.}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_Type,}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ \_Key\_type\ =\ uint16\_t,\ }
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \_Generation\ =\ \textcolor{keyword}{false},}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ \_Start\_capacity\ =\ 20>}
+\DoxyCodeLine{00021\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structbcl_1_1dense__table__traits}{dense\_table\_traits}}\{}
+\DoxyCodeLine{00022\ \ \ \textcolor{keyword}{typedef}\ \textcolor{keywordtype}{size\_t}\ size\_type;}
+\DoxyCodeLine{00023\ \ \ \textcolor{keyword}{typedef}\ \_Key\_type\ key\_type;}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \ \ \textcolor{comment}{//computed\ dont\ mutate\ manualy,\ configure\ through\ template\ parameters.}}
+\DoxyCodeLine{00027\ \ \ \textcolor{keyword}{static}\ \_BCLCONSTEXPR11\ \textcolor{keywordtype}{size\_t}\ start\_capacity\ =\ \_Start\_capacity;}
+\DoxyCodeLine{00028\ \ \ \textcolor{keyword}{static}\ \_BCLCONSTEXPR11\ \textcolor{keywordtype}{bool}\ gen\ =\ \_Generation;}
+\DoxyCodeLine{00029\ \ \ \textcolor{keyword}{static}\ \_BCLCONSTEXPR11\ \textcolor{keywordtype}{size\_t}\ max\_size\ =\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(std::numeric\_limits<\_Key\_type>::max());}
+\DoxyCodeLine{00030\ \ \ \textcolor{keyword}{static}\ \_BCLCONSTEXPR11\ \textcolor{keywordtype}{bool}\ movable\ =\ std::is\_move\_assignable\_v<\_Type>\ \&\&\ std::is\_move\_constructible\_v<\_Type>;}
+\DoxyCodeLine{00031\ \ \ \textcolor{keyword}{static}\ \_BCLCONSTEXPR11\ \textcolor{keywordtype}{bool}\ copyable\ =\ std::is\_copy\_constructible\_v<\_Type>\ \&\&\ std::is\_copy\_assignable\_v<\_Type>;}
+\DoxyCodeLine{00032\ \ \ \textcolor{keyword}{static}\ \_BCLCONSTEXPR11\ \textcolor{keywordtype}{bool}\ assignable\ =\ std::is\_assignable\_v<\_Type,\ \_Type>\ ||\ std::is\_trivially\_assignable\_v<\_Type,\ \_Type>;}
+\DoxyCodeLine{00033\ \ \ \textcolor{keyword}{static}\ \_BCLCONSTEXPR11\ \textcolor{keywordtype}{bool}\ memcpyable\ =\ std::is\_trivially\_copyable\_v<\_Type>;}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \textcolor{keyword}{static\_assert}(copyable\ ==\ \textcolor{keyword}{true},\ \textcolor{stringliteral}{"{}\_Type\ must\ be\ both\ copy\_constructable\ and\ copy\ assignable."{}});}
+\DoxyCodeLine{00036\ \ \ \textcolor{keyword}{static\_assert}(std::is\_integral<\_Key\_type>()\ \&\&\ std::is\_unsigned<\_Key\_type>(),\ \textcolor{stringliteral}{"{}\_Key\_type\ is\ required\ to\ be\ both\ of\ type\ integral\ and\ unsigned."{}});}
+\DoxyCodeLine{00037\ \};}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_Type,\ \textcolor{keyword}{typename}\ \_Traits\ =\ dense\_table\_traits<\_Type>>}
+\DoxyCodeLine{00040\ \textcolor{keyword}{class\ }dense\_table\{}
+\DoxyCodeLine{00041\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \textcolor{keyword}{static}\ \_BCLCONSTEXPR11\ \mbox{\hyperlink{structbcl_1_1__freelist__traits}{\_freelist\_traits}}\ flt\{.fixed\ =\ \textcolor{keyword}{false},\ .force\_heap\ =\ \textcolor{keyword}{true}\};}
+\DoxyCodeLine{00044\ \ \ \textcolor{keyword}{static}\ \_BCLCONSTEXPR11\ uint8\_t\ growth\_rate\ =\ 4.0f;}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \ \ \textcolor{keyword}{struct\ }handle\_type\{}
+\DoxyCodeLine{00047\ \ \ \ \ \_Traits::key\_type\ key;}
+\DoxyCodeLine{00048\ \ \ \};}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \textcolor{keyword}{struct\ }table\_entry\{}
+\DoxyCodeLine{00051\ \ \ \ \_Traits::key\_type\ idx;}
+\DoxyCodeLine{00052\ \ \ \};}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \textcolor{keyword}{struct\ }map\_entry\{}
+\DoxyCodeLine{00055\ \ \ \ \ \_Traits::key\_type\ rev;}
+\DoxyCodeLine{00056\ \ \ \};}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ std::vector<table\_entry>\ table;}
+\DoxyCodeLine{00059\ \ \ std::vector<\_Type>\ dat;}
+\DoxyCodeLine{00060\ \ \ \mbox{\hyperlink{classbcl_1_1freelist}{bcl::freelist<\_Traits::start\_capacity,\ \_freelist\_traits::\_bitvector,\ flt>}}\ freelist;}
+\DoxyCodeLine{00061\ \ \ std::vector<typename\ \_Traits::key\_type>\ map;}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keyword}{typedef}\ handle\_type\ \mbox{\hyperlink{classbcl_1_1dense__table_a94e840684f1137c909a55c6d945a93f0}{handle}};}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00078\ \ \ \ \ \textcolor{keyword}{typedef}\ \_Traits::key\_type\ \mbox{\hyperlink{classbcl_1_1dense__table_addc7e69d98e921391304f68d6f5d427b}{key\_type}};}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00081\ \ \ }
+\DoxyCodeLine{00082\ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_Container,\textcolor{keyword}{typename}\ \_Value\_Type>}
+\DoxyCodeLine{00083\ \ \ \_BCLCONSTEXPR11\ \textcolor{keywordtype}{void}\ init\_heap(\_Container\&\ container,\ \textcolor{keyword}{typename}\ \_Container::iterator\ hstart,\ \textcolor{keywordtype}{size\_t}\ hsize,\ \textcolor{keyword}{const}\ \_Value\_Type\&\ val)\{}
+\DoxyCodeLine{00084\ \ \ \ \ \textcolor{comment}{//\ conatiner\ mut\ implement\ a\ insert(iterator\ \_s,\ size\_t\ count,\ const\ \_Type\&\ val);\ function}}
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{comment}{//\ and\ fill\ the\ iterator\ -\/\ iterator\ +\ count\ =\ val;}}
+\DoxyCodeLine{00086\ \ \ \ \ container.insert(hstart,\ hsize,\ val);}
+\DoxyCodeLine{00087\ \ \ \}}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ \_BCLCONSTEXPR11\ \textcolor{keywordtype}{void}\ grow(\_Traits::key\_type\ \mbox{\hyperlink{classbcl_1_1dense__table_a32cb4cac7bbcdba03a167808a2007e22}{size}})\{}
+\DoxyCodeLine{00090\ \ \ \ \ table.reserve(\mbox{\hyperlink{classbcl_1_1dense__table_a32cb4cac7bbcdba03a167808a2007e22}{size}});}
+\DoxyCodeLine{00091\ \ \ \ \ dat.reserve(\mbox{\hyperlink{classbcl_1_1dense__table_a32cb4cac7bbcdba03a167808a2007e22}{size}});}
+\DoxyCodeLine{00092\ \ \ \ \ map.reserve(\mbox{\hyperlink{classbcl_1_1dense__table_a32cb4cac7bbcdba03a167808a2007e22}{size}});}
+\DoxyCodeLine{00093\ \ \ \ \ \mbox{\hyperlink{classbcl_1_1freelist}{freelist}}.resize(\mbox{\hyperlink{classbcl_1_1dense__table_a32cb4cac7bbcdba03a167808a2007e22}{size}});}
+\DoxyCodeLine{00094\ \ \ \ \ init\_heap(table,\ table.begin()\ +\ table.size(),\ table.capacity()\ -\/\ table.size(),\ table\_entry\{0\});}
+\DoxyCodeLine{00095\ \ \ \ \ init\_heap(map,\ map.begin()\ +\ map.size(),\ map.capacity()\ -\/\ map.size(),\ 0);}
+\DoxyCodeLine{00096\ \ \ \}}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \ \_BCLCONSTEXPR11\ \textcolor{keywordtype}{void}\ \_init()\{}
+\DoxyCodeLine{00099\ \ \ \ \ grow(\_Traits::start\_capacity);}
+\DoxyCodeLine{00100\ \ \}}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00113\ \ \ \_Type\&\ \mbox{\hyperlink{classbcl_1_1dense__table_ab0bfe8639a31d062afb3b98c700a98f2}{operator[]}}(\mbox{\hyperlink{classbcl_1_1dense__table_a94e840684f1137c909a55c6d945a93f0}{handle}}\ h)\{}
+\DoxyCodeLine{00114\ \ \ \ \ \textcolor{keywordflow}{return}\ dat[table[h.key].idx];}
+\DoxyCodeLine{00115\ \ \ \}}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00131\ \ \ \ \_BCLCONSTEXPR11\ \_Type*\ \mbox{\hyperlink{classbcl_1_1dense__table_afdfd7da41dd118bd4d941bbd66c55731}{begin}}()\{}
+\DoxyCodeLine{00132\ \ \ \ \ \ \textcolor{keywordflow}{return}\ \&(*dat.begin());}
+\DoxyCodeLine{00133\ \ \ \ \}}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00138\ \ \ \ \_BCLCONSTEXPR11\ \_Type*\ \mbox{\hyperlink{classbcl_1_1dense__table_a63b17d61e6893463b3409bdb4b277b49}{end}}()\{}
+\DoxyCodeLine{00139\ \ \ \ \ \ \textcolor{keywordflow}{return}\ \&(*dat.end());}
+\DoxyCodeLine{00140\ \ \ \ \}}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00145\ \ \ \ \_BCLCONSTEXPR11\ \textcolor{keyword}{const}\ \_Type*\ \mbox{\hyperlink{classbcl_1_1dense__table_ae212967f1010a0599974f5dd9c703002}{cbegin}}()\{}
+\DoxyCodeLine{00146\ \ \ \ \ \ \textcolor{keywordflow}{return}\ \&(*dat.begin());}
+\DoxyCodeLine{00147\ \ \ \ \ \}}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00152\ }
+\DoxyCodeLine{00153\ \ \ \ \_BCLCONSTEXPR11\ \textcolor{keyword}{const}\ \_Type*\ \mbox{\hyperlink{classbcl_1_1dense__table_aaf2632e7deaa4e6644b6d2a6d0745513}{cend}}()\{}
+\DoxyCodeLine{00154\ \ \ \ \ \textcolor{keywordflow}{return}\ \&(*dat.end());}
+\DoxyCodeLine{00155\ \ \ \ \};}
+\DoxyCodeLine{00156\ }
+\DoxyCodeLine{00157\ \ \ \ \_BCLCONSTEXPR11\ \_Type*\ rbegin()\{}
+\DoxyCodeLine{00158\ \ \ \ \ \ \textcolor{keywordflow}{return}\ \&(*dat.begin());}
+\DoxyCodeLine{00159\ \ \ \ \}}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00164\ \ \ \ \_BCLCONSTEXPR11\ \_Type*\ \mbox{\hyperlink{classbcl_1_1dense__table_ad7d85fd1ad9c2f11c488acda015dc143}{rend}}()\{}
+\DoxyCodeLine{00165\ \ \ \ \ \ \textcolor{keywordflow}{return}\ \&(*dat.end());}
+\DoxyCodeLine{00166\ \ \ \ \}}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00171\ \ \ \ \_BCLCONSTEXPR11\ \textcolor{keyword}{const}\ \_Type*\ \mbox{\hyperlink{classbcl_1_1dense__table_ab61d38218009c87334b8107f3b04db10}{crbegin}}()\{}
+\DoxyCodeLine{00172\ \ \ \ \ \ \textcolor{keywordflow}{return}\ \&(*dat.begin());}
+\DoxyCodeLine{00173\ \ \ \ \}}
+\DoxyCodeLine{00174\ }
+\DoxyCodeLine{00178\ \ \ \ \_BCLCONSTEXPR11\ \textcolor{keyword}{const}\ \_Type*\ \mbox{\hyperlink{classbcl_1_1dense__table_a4136bb2852afd1bb1040317bcc94ace5}{crend}}()\{}
+\DoxyCodeLine{00179\ \ \ \ \ \ \textcolor{keywordflow}{return}\ \&(*dat.end());}
+\DoxyCodeLine{00180\ \ \ \ \}}
+\DoxyCodeLine{00181\ }
+\DoxyCodeLine{00187\ \ \ \_BCLCONSTEXPR11\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{classbcl_1_1dense__table_ae3595d949b5692fe392e5a601e37dcb5}{max\_size}}()\{}
+\DoxyCodeLine{00188\ \ \ \ \ \textcolor{keywordflow}{return}\ \_Traits::max\_size;}
+\DoxyCodeLine{00189\ \ \ \}}
+\DoxyCodeLine{00190\ \ \ }
+\DoxyCodeLine{00197\ \ \ \_BCLCONSTEXPR11\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{classbcl_1_1dense__table_a32cb4cac7bbcdba03a167808a2007e22}{size}}()\{}
+\DoxyCodeLine{00198\ \ \ \ \ \textcolor{keywordflow}{return}\ dat.size();}
+\DoxyCodeLine{00199\ \ \ \}}
+\DoxyCodeLine{00200\ }
+\DoxyCodeLine{00207\ \ \ \_BCLCONSTEXPR11\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classbcl_1_1dense__table_af6c74d6a9072728dac5fdacbe1d2d18c}{empty}}()\{}
+\DoxyCodeLine{00208\ \ \ \ \ \textcolor{keywordflow}{return}\ dat.empty();}
+\DoxyCodeLine{00209\ \ \ \}}
+\DoxyCodeLine{00210\ }
+\DoxyCodeLine{00211\ \ \ }
+\DoxyCodeLine{00218\ \ \ \_BCLCONSTEXPR11\ \_Type*\ \mbox{\hyperlink{classbcl_1_1dense__table_a2cf9c8e27c2cd85a5ff8f7680350afb3}{data}}()\{}
+\DoxyCodeLine{00219\ \ \ \ \ \textcolor{keywordflow}{return}\ dat.data();}
+\DoxyCodeLine{00220\ \ \ \}}
+\DoxyCodeLine{00221\ }
+\DoxyCodeLine{00229\ \ \ \_BCLCONSTEXPR11\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classbcl_1_1dense__table_ac1dd7a2eb4eb834fe46368720c8d7ae2}{is\_valid}}(\mbox{\hyperlink{classbcl_1_1dense__table_a94e840684f1137c909a55c6d945a93f0}{handle}}\ h)\{}
+\DoxyCodeLine{00230\ \ \ \ \ \textcolor{comment}{//\ TODO:\ implement\ bit\ vec\ check\ freelist\ indice.}}
+\DoxyCodeLine{00231\ \ \ \ \ \textcolor{comment}{//\ TODO:\ check\ against\ generation.}}
+\DoxyCodeLine{00232\ \ \ \ \ \textcolor{comment}{//\ return\ \_freelist.check(h.\_key);}}
+\DoxyCodeLine{00233\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00234\ \ \ \}}
+\DoxyCodeLine{00235\ }
+\DoxyCodeLine{00244\ \ \ \_BCLCONSTEXPR11\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classbcl_1_1dense__table_a412cc90675fa9928cef9955a9b88d120}{reserve}}(\textcolor{keywordtype}{size\_t}\ count)\{}
+\DoxyCodeLine{00245\ \ \ \ \ grow(count);}
+\DoxyCodeLine{00246\ \ \ \}}
+\DoxyCodeLine{00247\ \ \ }
+\DoxyCodeLine{00248\ \ \ \textcolor{comment}{//\ \_BCLCONSTEXPR11\ void\ shrink\_to\_fit()\{}}
+\DoxyCodeLine{00249\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00250\ \ \ \textcolor{comment}{//\ \}}}
+\DoxyCodeLine{00251\ \ \ }
+\DoxyCodeLine{00258\ \ \ \_BCLCONSTEXPR11\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classbcl_1_1dense__table_a096d793e8d663c5c603c37d3aff8cf45}{clear}}()\{}
+\DoxyCodeLine{00259\ \ \ \ \ dat.clear();}
+\DoxyCodeLine{00260\ \ \ \ \ map.clear();}
+\DoxyCodeLine{00261\ \ \ \ \ \textcolor{comment}{//\ freelist.clear();}}
+\DoxyCodeLine{00262\ \ \ \ \ table.clear();\ \textcolor{comment}{//TODO:\ with\ generation\ enabled,\ clear\ will\ wrap\ generation\ allowing\ }}
+\DoxyCodeLine{00263\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//invalid\ handles\ to\ sneak\ by\ instead\ iterate\ container\ and\ reset\ just\ the\ index.}}
+\DoxyCodeLine{00264\ \ \ \}}
+\DoxyCodeLine{00265\ }
+\DoxyCodeLine{00272\ \ \ \_BCLCONSTEXPR11\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{classbcl_1_1dense__table_a4eeed0a3abf665348c86313186eba007}{capacity}}()\{}
+\DoxyCodeLine{00273\ \ \ \ \ \textcolor{keywordflow}{return}\ dat.capacity();}
+\DoxyCodeLine{00274\ \ \ \}}
+\DoxyCodeLine{00275\ }
+\DoxyCodeLine{00284\ \ \ \_BCLCONSTEXPR11\ \_Type\&\ \mbox{\hyperlink{classbcl_1_1dense__table_a603a4d3116cfed3056cb4a34fbd8462a}{get}}(\mbox{\hyperlink{classbcl_1_1dense__table_a94e840684f1137c909a55c6d945a93f0}{handle}}\ h)\{}
+\DoxyCodeLine{00285\ \ \ \ \ \mbox{\hyperlink{classbcl_1_1dense__table_ac1dd7a2eb4eb834fe46368720c8d7ae2}{is\_valid}}(h);}
+\DoxyCodeLine{00286\ \ \ \ \ \textcolor{keywordflow}{return}\ dat[table[h.key].idx];}
+\DoxyCodeLine{00287\ \ \ \}}
+\DoxyCodeLine{00288\ }
+\DoxyCodeLine{00289\ \ \ }
+\DoxyCodeLine{00294\ \ \ \_BCLCONSTEXPR11\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classbcl_1_1dense__table_a071d32af0da4e49954e515c700ceacd6}{erase}}(\mbox{\hyperlink{classbcl_1_1dense__table_a94e840684f1137c909a55c6d945a93f0}{handle}}\ h)\{}
+\DoxyCodeLine{00295\ \ \ \ \ \mbox{\hyperlink{classbcl_1_1dense__table_addc7e69d98e921391304f68d6f5d427b}{key\_type}}\ l\ =\ map[dat.size()\ -\/\ 1];}
+\DoxyCodeLine{00296\ \ \ \ \ table[l].idx\ =\ table[h.key].idx;}
+\DoxyCodeLine{00297\ \ \ \ \ }
+\DoxyCodeLine{00298\ \ \ \ \ \textcolor{comment}{//swap\ and\ pop\ -\/\ data,\ map}}
+\DoxyCodeLine{00299\ \ \ \ \ std::swap(dat[table[h.key].idx],\ dat[dat.size()-\/1]);}
+\DoxyCodeLine{00300\ \ \ \ \ std::swap(map[table[h.key].idx],\ map[dat.size()-\/1]);}
+\DoxyCodeLine{00301\ \ \ \ \ dat.pop\_back();}
+\DoxyCodeLine{00302\ \ \ \ \ map.pop\_back();}
+\DoxyCodeLine{00303\ }
+\DoxyCodeLine{00304\ \ \ \ \ freelist.push(h.key);}
+\DoxyCodeLine{00305\ \ \ \}}
+\DoxyCodeLine{00306\ }
+\DoxyCodeLine{00314\ \ \ \_BCLCONSTEXPR11\ \mbox{\hyperlink{classbcl_1_1dense__table_a94e840684f1137c909a55c6d945a93f0}{handle}}\ \mbox{\hyperlink{classbcl_1_1dense__table_a83ca90b445f477806443c26e42c9c056}{insert}}(\textcolor{keyword}{const}\ \_Type\&\ val)\{}
+\DoxyCodeLine{00315\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ table\_slot\ =\ freelist.get();}
+\DoxyCodeLine{00316\ \ \ \ \ uint32\_t\ data\_index\ =\ dat.size();\ }
+\DoxyCodeLine{00317\ }
+\DoxyCodeLine{00318\ \ \ \ \ \textcolor{keywordflow}{if}(table\_slot\ ==\ 0\ ||\ dat.size()\ >=\ dat.capacity())\{}
+\DoxyCodeLine{00319\ \ \ \ \ \ \ grow(dat.capacity()\ *\ growth\_rate);}
+\DoxyCodeLine{00320\ \ \ \ \ \}}
+\DoxyCodeLine{00321\ }
+\DoxyCodeLine{00322\ \ \ \ \ table\_slot-\/-\/;}
+\DoxyCodeLine{00323\ \ \ \ \ table[table\_slot].idx\ =\ data\_index;}
+\DoxyCodeLine{00324\ \ \ \ \ dat.push\_back(val);}
+\DoxyCodeLine{00325\ \ \ \ \ map[data\_index]\ =\ table\_slot;}
+\DoxyCodeLine{00326\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classbcl_1_1dense__table_a94e840684f1137c909a55c6d945a93f0}{handle}}\{}
+\DoxyCodeLine{00327\ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}\_Traits::key\_type\textcolor{keyword}{>}(table\_slot)\};}
+\DoxyCodeLine{00328\ \ \ \}}
+\DoxyCodeLine{00329\ }
+\DoxyCodeLine{00337\ \ \ \_BCLCONSTEXPR11\ \mbox{\hyperlink{classbcl_1_1dense__table_a94e840684f1137c909a55c6d945a93f0}{handle}}\ \mbox{\hyperlink{classbcl_1_1dense__table_a0e089b243d476d3d333ceeb43a1b238d}{insert}}(\_Type\&\&\ val)\{}
+\DoxyCodeLine{00338\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ table\_slot\ =\ freelist.get();}
+\DoxyCodeLine{00339\ \ \ \ \ uint32\_t\ data\_index\ =\ dat.size();\ }
+\DoxyCodeLine{00340\ }
+\DoxyCodeLine{00341\ \ \ \ \ \textcolor{keywordflow}{if}(table\_slot\ ==\ 0\ ||\ dat.size()\ >=\ dat.capacity())\{}
+\DoxyCodeLine{00342\ \ \ \ \ \ \ grow(dat.capacity()\ *\ growth\_rate);}
+\DoxyCodeLine{00343\ \ \ \ \ \}}
+\DoxyCodeLine{00344\ }
+\DoxyCodeLine{00345\ \ \ \ \ table\_slot-\/-\/;}
+\DoxyCodeLine{00346\ \ \ \ \ table[table\_slot].idx\ =\ data\_index;}
+\DoxyCodeLine{00347\ \ \ \ \ dat.push\_back(std::move(val));}
+\DoxyCodeLine{00348\ \ \ \ \ map[data\_index]\ =\ table\_slot;}
+\DoxyCodeLine{00349\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classbcl_1_1dense__table_a94e840684f1137c909a55c6d945a93f0}{handle}}\{}
+\DoxyCodeLine{00350\ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}\_Traits::key\_type\textcolor{keyword}{>}(table\_slot)\};}
+\DoxyCodeLine{00351\ \ \ \}}
+\DoxyCodeLine{00352\ }
+\DoxyCodeLine{00353\ }
+\DoxyCodeLine{00354\ \ \ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00355\ \ \ \textcolor{comment}{//profiling,\ non\ standard,\ and\ algorithmic\ methods.}}
+\DoxyCodeLine{00356\ \ \ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00357\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00358\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00359\ \ \ \textcolor{comment}{//\ \_BCLCONSTEXPR11\ size\_t\ heap\_size()\{}}
+\DoxyCodeLine{00360\ \ \ \textcolor{comment}{//\ \ return\ (\_data.capacity()\ *\ sizeof(\_Type))}}
+\DoxyCodeLine{00361\ \ \ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ +(\_map.capacity()\ +\ sizeof(\_map\_node))\ }}
+\DoxyCodeLine{00362\ \ \ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ +(\_table.capacity()\ *\ sizeof(\_table\_node));\ }}
+\DoxyCodeLine{00363\ \ \ \textcolor{comment}{//\}}}
+\DoxyCodeLine{00364\ \ \ }
+\DoxyCodeLine{00365\ }
+\DoxyCodeLine{00366\ \ \ \mbox{\hyperlink{classbcl_1_1dense__table}{dense\_table}}()\{}
+\DoxyCodeLine{00367\ \ \ \ \ \_init();}
+\DoxyCodeLine{00368\ \ \ \}}
+\DoxyCodeLine{00369\ }
+\DoxyCodeLine{00370\ \ \ \string~dense\_table()\{}
+\DoxyCodeLine{00371\ }
+\DoxyCodeLine{00372\ \ \ \}}
+\DoxyCodeLine{00373\ }
+\DoxyCodeLine{00374\ \};\ \textcolor{comment}{//class\ dense\_table}}
+\DoxyCodeLine{00375\ \}\textcolor{comment}{//namespace\ bcl}}
+
+\end{DoxyCode}

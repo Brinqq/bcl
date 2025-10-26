@@ -1,0 +1,169 @@
+\doxysection{tagptr.\+h}
+\hypertarget{tagptr_8h_source}{}\label{tagptr_8h_source}\index{/Users/brinq/.dev/projects/bcl/src/include/bl/containers/tagptr.h@{/Users/brinq/.dev/projects/bcl/src/include/bl/containers/tagptr.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}bl/assert.h"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}bl/features.h"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#if\ defined(\_\_x86\_64\_\_)\ ||\ defined(\_\_arm64\_\_)}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#error\ "{}Unnkown\ CPU\ architecture,\ can\ not\ guarantee\ tagging\ compatibiliy."{}}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{keyword}{static\_assert}(\textcolor{keyword}{sizeof}(uintptr\_t)\ ==\ 8,\ \textcolor{stringliteral}{"{}64bit\ compilation\ is\ required\ for\ pointer\ tagging."{}});}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#if\ defined(\_WIN32)}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#elif\ defined(\_LINUX)\ ||\ defined(\_\_unix\_\_)}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#elif\ defined(\_\_APPLE\_\_)}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#error\ "{}Unkown\ OS,\ can\ not\ guarantee\ tagging\ compatibiliy."{}}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#if\ defined(\_Debug)\ ||\ !defined(NDEBUG)}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#define\ \_assert\_tag\ "{}tagptr"{}}}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#define\ \_TGP\_CLEAR\_HIGH\_MASK\ 0xffff00}}
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#define\ \_TGP\_CLEAR\_LOW\_MASK\ 0xf}}
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#define\ \_TGP\_SIGN\_BIT\ 47}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#define\ BCL\_TAG\_LOW\_MAX\ 0x3}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#define\ BCL\_TAG\_LOW\_MIN\ 0x0}}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#define\ BCL\_TAG\_HIGH\_MAX\ 63}}
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#define\ BCL\_TAG\_HIGH\_MIN\ 48}}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \textcolor{keyword}{namespace\ }bcl\{}
+\DoxyCodeLine{00042\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_Type>}
+\DoxyCodeLine{00043\ \textcolor{keyword}{class\ }tag\_ptr\{}
+\DoxyCodeLine{00044\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00045\ \ \ uintptr\_t\ ptr;}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \textcolor{keywordtype}{bool}\ validate\_pointer(\textcolor{keyword}{const}\ \_Type*\ p)\{}
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keywordflow}{if}(p\ ==\ \textcolor{keyword}{nullptr})\{\textcolor{keywordflow}{return}\ \textcolor{keyword}{false};\}}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \textcolor{preprocessor}{\ \ \ \ \#if\ defined(\_\_clang\_\_)\ |\ defined(\_\_GNUC\_\_)}}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ z\ =\ \_\_builtin\_ctzl((uintptr\_t)p);}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \textcolor{keywordflow}{if}(\ z\ ==\ 0\ |\ z\ <\ (BCL\_TAG\_LOW\_MAX\ -\/\ 1))\{}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00055\ \textcolor{preprocessor}{\ \ \ \ \#endif}}
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00057\ \ \ }
+\DoxyCodeLine{00058\ \ \ \}}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \ \ \ \_BCLCONSTEXPR20\ uintptr\_t\ mask\_range(\textcolor{keyword}{const}\ uint8\_t\ low,\ \textcolor{keyword}{const}\ uint8\_t\ high)\textcolor{keyword}{const}\{}
+\DoxyCodeLine{00061\ \ \ }
+\DoxyCodeLine{00062\ \ \ \ \_bclassert((low\ >=\ BCL\_TAG\_LOW\_MIN\ \&\&\ high\ <=\ BCL\_TAG\_LOW\_MAX)\ ||}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (low\ >=\ BCL\_TAG\_HIGH\_MIN\ \&\&\ high\ <=\ BCL\_TAG\_HIGH\_MAX)\ }
+\DoxyCodeLine{00064\ \ \ \ \ );}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \ \ \textcolor{keywordflow}{return}\ ((\textcolor{keyword}{static\_cast<}uintptr\_t\textcolor{keyword}{>}(1u)\ <<\ (high\ -\/\ low\ +1))\ -\/1\ )\ <<\ low;}
+\DoxyCodeLine{00067\ \ \ \}}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00070\ \ \ tag\_ptr(\_Type*\ ptr)\{}
+\DoxyCodeLine{00071\ \ \ \ \ \_bclassert\_tag(validate\_pointer(ptr),\ \textcolor{stringliteral}{"{}tag\_ptr"{}});}
+\DoxyCodeLine{00072\ \ \ \ \ this-\/>ptr\ =\ (uintptr\_t)ptr;}
+\DoxyCodeLine{00073\ \ \ \};}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \textcolor{preprocessor}{\ \#if\ \_BCLHASCXX17}}
+\DoxyCodeLine{00076\ \ \textcolor{keyword}{explicit}\ tag\_ptr(\textcolor{keyword}{const}\ uintptr\_t\ ptr)\{}
+\DoxyCodeLine{00077\ \ \ \ \ \_bclassert\_tag(validate\_pointer(ptr),\ \textcolor{stringliteral}{"{}tag\_ptr"{}});}
+\DoxyCodeLine{00078\ \ \ \ \ this-\/>ptr\ =\ ptr;}
+\DoxyCodeLine{00079\ \ \ \};}
+\DoxyCodeLine{00080\ \textcolor{preprocessor}{\ \#else}}
+\DoxyCodeLine{00081\ \ \ tag\_ptr(\textcolor{keyword}{const}\ uintptr\_t\ ptr)\{}
+\DoxyCodeLine{00082\ \ \ \ \ \_bclassert\_tag(validate\_pointer(ptr),\ \textcolor{stringliteral}{"{}tag\_ptr"{}});}
+\DoxyCodeLine{00083\ \ \ \ \ \_ptr\ =\ (uintptr\_t)ptr;}
+\DoxyCodeLine{00084\ \ \ \};}
+\DoxyCodeLine{00085\ \textcolor{preprocessor}{\ \#endif}}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \ \ \textcolor{comment}{//\ sets\ the\ given\ bit\ to\ a\ value.}}
+\DoxyCodeLine{00088\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00089\ \ \ \textcolor{comment}{//param:\ bit\ -\/\ the\ bit\ that\ is\ changed.}}
+\DoxyCodeLine{00090\ \ \ \textcolor{comment}{//param:\ val\ -\/\ the\ value\ to\ set.}}
+\DoxyCodeLine{00091\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00092\ \ \ \textcolor{comment}{//notes:\ \ value\ passed\ must\ be\ either\ 1\ or\ 0\ since\ we\ are\ only\ setting\ one\ bit.}}
+\DoxyCodeLine{00093\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00094\ \ \ \ \textcolor{keywordtype}{void}\ tag\_bit(\textcolor{keyword}{const}\ uint8\_t\ bit,\ \textcolor{keyword}{const}\ uint8\_t\ val)\{}
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{keyword}{const}\ uintptr\_t\ mask\ =\ 1;}
+\DoxyCodeLine{00096\ \ \ \ \ ptr\ |=\ ((\textcolor{keyword}{static\_cast<}uintptr\_t\textcolor{keyword}{>}(val)\ \&\ mask)\ <<\ bit);}
+\DoxyCodeLine{00097\ \ \ \ \}}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \ \ \textcolor{comment}{//\ sets\ a\ range\ of\ bits\ to\ a\ value.}}
+\DoxyCodeLine{00100\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00101\ \ \ \textcolor{comment}{//param:\ low\ -\/\ the\ lowest\ bit\ to\ be\ set.}}
+\DoxyCodeLine{00102\ \ \ \textcolor{comment}{//param:\ high\ -\/\ the\ highest\ bit\ to\ be\ set.}}
+\DoxyCodeLine{00103\ \ \ \textcolor{comment}{//param:\ val\ -\/\ value\ to\ placed\ in\ ranges.}}
+\DoxyCodeLine{00104\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00105\ \ \ \textcolor{comment}{//\ notes:\ the\ low\ and\ high\ params\ must\ fall\ in\ between\ BCL\_TAG\_LOW/HIGH\_MIN-\/MAX.}}
+\DoxyCodeLine{00106\ \ \ \textcolor{comment}{//\ -\/\ value\ is\ truncated\ if\ larger\ then\ width\ =\ hight\ -\/\ low.}}
+\DoxyCodeLine{00107\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00108\ \ \ \ \textcolor{keywordtype}{void}\ tag\_range(\textcolor{keyword}{const}\ uint8\_t\ low,\ \textcolor{keyword}{const}\ uint8\_t\ high,\ uint32\_t\ val)\{}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ uintptr\_t\ mask\ =\ mask\_range(low,\ high);\ }
+\DoxyCodeLine{00110\ \ \ \ \ \ \ ptr\ =\ (ptr\ \&\ \string~mask)\ |\ ((\textcolor{keyword}{static\_cast<}uintptr\_t\textcolor{keyword}{>}(val)\ <<\ low)\ \&\ mask);}
+\DoxyCodeLine{00111\ \ \ \ \}}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ \ \ \ uint32\_t\ check\_range(\textcolor{keyword}{const}\ uint8\_t\ low,\ \textcolor{keyword}{const}\ uint8\_t\ high)\{}
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{keyword}{const}\ uintptr\_t\ mask\ =\ mask\_range(low,\ high);}
+\DoxyCodeLine{00116\ \ \ \ \ uintptr\_t\ ret\ =\ ptr\ \&\ mask;}
+\DoxyCodeLine{00117\ \ \ \ \ ret\ >>=\ low;}
+\DoxyCodeLine{00118\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}uint32\_t\textcolor{keyword}{>}(ret);}
+\DoxyCodeLine{00119\ \ \ \}}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \ \ uint8\_t\ check\_bit(\textcolor{keyword}{const}\ uint8\_t\ bit)\{}
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}uint8\_t\textcolor{keyword}{>}((ptr\ >>\ bit)\ \&\ \textcolor{keyword}{static\_cast<}uintptr\_t\textcolor{keyword}{>}(1u));}
+\DoxyCodeLine{00123\ \ \ \}}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \ \ \textcolor{keywordtype}{void}\ clear\_range()\{\}}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ clear\_low()\{}
+\DoxyCodeLine{00128\ \ \ ptr\ \&=\ \string~(\_TGP\_CLEAR\_LOW\_MASK);}
+\DoxyCodeLine{00129\ \ \ \}}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ clear\_high()\{}
+\DoxyCodeLine{00132\ \ \ \ \ uint8\_t\ sign\ =\ check\_bit(\_TGP\_SIGN\_BIT);}
+\DoxyCodeLine{00133\ \ \ \ \ tag\_range(BCL\_TAG\_HIGH\_MIN,\ BCL\_TAG\_HIGH\_MAX,\ sign);}
+\DoxyCodeLine{00134\ \ \ \}}
+\DoxyCodeLine{00135\ }
+\DoxyCodeLine{00136\ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ clear()\{}
+\DoxyCodeLine{00137\ \ \ \ \ clear\_high();\ \ }
+\DoxyCodeLine{00138\ \ \ \ \ clear\_low();}
+\DoxyCodeLine{00139\ \ \ \}}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \ \ \textcolor{comment}{//\ Gets\ the\ underlying\ tagged\ data\ pointer}}
+\DoxyCodeLine{00142\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00143\ \ \ \textcolor{comment}{//\ @returns\ uintptr\_t\ representation\ of\ a\ pointer\ with\ tagged\ data.}}
+\DoxyCodeLine{00144\ \ \ \textcolor{comment}{//\ @note\ this\ is\ used\ in\ cases\ where\ u\ might\ want\ to\ store\ raw\ uintptr\_t's\ so\ u\ can\ unwrap\ using\ simd.}}
+\DoxyCodeLine{00145\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00146\ \ \ uintptr\_t\ get\_raw()\{\textcolor{keywordflow}{return}\ ptr;\};}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00148\ \ \ \textcolor{comment}{//\ Gets\ the\ data\ pointer\ in\ a\ valid/derefrencable\ state.}}
+\DoxyCodeLine{00149\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00150\ \ \ \textcolor{comment}{//\ @returns\ \_Type*\ ptr}}
+\DoxyCodeLine{00151\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00152\ \ \ \_Type*\ data()\{}
+\DoxyCodeLine{00153\ \ \ clear();}
+\DoxyCodeLine{00154\ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{reinterpret\_cast<}\_Type*\textcolor{keyword}{>}(ptr);}
+\DoxyCodeLine{00155\ \ \ \}}
+\DoxyCodeLine{00156\ }
+\DoxyCodeLine{00157\ \};\ \textcolor{comment}{//class\ tag\_ptr}}
+\DoxyCodeLine{00158\ }
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00160\ \}\ \textcolor{comment}{//namespace\ bcl}}
+\DoxyCodeLine{00161\ }
+\DoxyCodeLine{00162\ \textcolor{preprocessor}{\#undef\ \_assert\_tag}}
+\DoxyCodeLine{00163\ \ }
+
+\end{DoxyCode}

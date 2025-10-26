@@ -1,0 +1,59 @@
+\doxysection{features.\+h}
+\hypertarget{features_8h_source}{}\label{features_8h_source}\index{/Users/brinq/.dev/projects/bcl/src/include/bl/features.h@{/Users/brinq/.dev/projects/bcl/src/include/bl/features.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#if\ \_\_cplusplus\ >=\ 2011}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#define\ \_BCLHASCXX11\ 1}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#if\ \_\_cplusplus\ >=\ 2014}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ \_BCLHASCXX14\ 1}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#if\ \_\_cplusplus\ >=\ 2017}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#define\ \_BCLHASCXX17\ 1}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#if\ \_\_cplusplus\ >=\ 2020}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#define\ \_BCLHASCXX20\ 1}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#if\ \_\_cplusplus\ >=\ 2023}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#define\ \_BCLHASCXX23\ 1}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#if\ \_BCLHASCXX11}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#define\ \ \_BCLCONSTEXPR11\ constexpr}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#define\ \_BCLCONSTEXPR11}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#if\ \_BCLHASCXX14}}
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#define\ \ \_BCLCONSTEXPR14\ constexpr}}
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#define\ \_BCLCONSTEXPR11}}
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#if\ \_BCLHASCXX17}}
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#define\ \ \_BCLCONSTEXPR17\ constexpr}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#define\ \_BCLCONSTEXPR17}}
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#if\ \_BCLHASCXX20}}
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#define\ \ \_BCLCONSTEXPR20\ constexpr}}
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#define\ \_BCLCONSTEXPR}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\#if\ \_BCLHASCXX23}}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#define\ \_BCLCONSTEVAL\ consteval}}
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00050\ \textcolor{preprocessor}{\#define\ \_BCLCONSTEVAL}}
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ }
+
+\end{DoxyCode}

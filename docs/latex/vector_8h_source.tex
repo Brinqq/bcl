@@ -1,0 +1,325 @@
+\doxysection{vector.\+h}
+\hypertarget{vector_8h_source}{}\label{vector_8h_source}\index{/Users/brinq/.dev/projects/bcl/src/include/bl/containers/vector.h@{/Users/brinq/.dev/projects/bcl/src/include/bl/containers/vector.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}bl/features.h"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}bl/assert.h"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <initializer\_list>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{keyword}{namespace\ }bcl\{}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_Type,\ u\textcolor{keywordtype}{int}32\_t\ \_Capacity,\ \textcolor{keyword}{typename}\ \_Allocator\ =\ std::allocator<\_Type>>}
+\DoxyCodeLine{00013\ \textcolor{keyword}{class\ }fixed\_vector\ :\ \textcolor{keyword}{public}\ \_Allocator\{}
+\DoxyCodeLine{00014\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00015\ \ \ \_Type*\ \_dat;}
+\DoxyCodeLine{00016\ \ \ uint32\_t\ \_size;}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \ \ \textcolor{comment}{//constants}}
+\DoxyCodeLine{00019\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ \_trivial\ =\ std::is\_trivial\_v<\_Type>;}
+\DoxyCodeLine{00020\ \ \ }
+\DoxyCodeLine{00021\ \ \ \textcolor{comment}{//internal\ helpers}}
+\DoxyCodeLine{00022\ \ \ \textcolor{keywordtype}{void}\ construct(\_Type*\ addr)\{}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keyword}{new}(addr)\ \_Type();}
+\DoxyCodeLine{00024\ \ \ \}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \ \ \_BCLCONSTEXPR20\ \textcolor{keywordtype}{void}\ construct(\_Type*\ start,\ \_Type*\ \ end)\{}
+\DoxyCodeLine{00027\ \ \ \ \ \_Type*\ cur\ =\ start;}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keywordflow}{while}(cur\ !=\ end)\{}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \textcolor{keyword}{new}(cur)\ \_Type();\ }
+\DoxyCodeLine{00030\ \ \ \ \ \ \ cur++;}
+\DoxyCodeLine{00031\ \ \ \ \ \}}
+\DoxyCodeLine{00032\ \ \ \}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ ...\_Val>}
+\DoxyCodeLine{00036\ \ \ \_BCLCONSTEXPR20\ \textcolor{keywordtype}{void}\ \_construct\_back(\_Val\&\&\ ...val)\{}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keyword}{new}(end())\ \_Type(std::forward<\_Val>(val)...);}
+\DoxyCodeLine{00038\ \ \ \ \ \_size++;}
+\DoxyCodeLine{00039\ \ \ \}}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \textcolor{keywordtype}{void}\ deconstruct(\_Type*\ addr)\{}
+\DoxyCodeLine{00042\ \ \ \ \ addr-\/>\string~\_Type();}
+\DoxyCodeLine{00043\ \ \ \}}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \textcolor{keywordtype}{void}\ deconstruct(\_Type*\ start,\ \_Type*\ end)\{}
+\DoxyCodeLine{00046\ \ \ \ \ \_Type*\ cur\ =\ start;}
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keywordflow}{while}(cur\ <\ end)\{}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ cur-\/>\string~\_Type();}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ cur++;}
+\DoxyCodeLine{00050\ \ \ \ \ \}\ }
+\DoxyCodeLine{00051\ \ \ \}}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \textcolor{keywordtype}{void}\ copy(\_Type*\ addr,\ \textcolor{keyword}{const}\ \_Type\&\ val)\{}
+\DoxyCodeLine{00054\ \ \ \ \ *addr\ =\ val;}
+\DoxyCodeLine{00055\ \ \ \};}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \ \textcolor{keywordtype}{void}\ copy(\_Type*\ start,\ \_Type*\ end,\ \textcolor{keyword}{const}\ \_Type\&\ val)\{}
+\DoxyCodeLine{00058\ \ \ \ \ \_Type*\ cur\ =\ start;}
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keywordflow}{while}(cur\ !=\ end)\{}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ *cur\ =\ val;}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ cur++;}
+\DoxyCodeLine{00062\ \ \ \ \ \}}
+\DoxyCodeLine{00063\ \ \ \};}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \ \ \textcolor{keywordtype}{void}\ alloc()\{}
+\DoxyCodeLine{00066\ \ \ \ \ \_dat\ =\ \textcolor{keyword}{static\_cast<}\_Allocator*\textcolor{keyword}{>}(\textcolor{keyword}{this})-\/>allocate(\_Capacity);}
+\DoxyCodeLine{00067\ \ \ \ \ \_bclassert\_msg(\_dat\ !=\ \textcolor{keyword}{nullptr},\ \ \textcolor{stringliteral}{"{}fixed\ vector\ failed\ to\ allocate\ memory"{}});}
+\DoxyCodeLine{00068\ \ \ \ \ memset(\_dat,\ 0,\ \textcolor{keyword}{sizeof}(\_Type)\ *\ \_Capacity);}
+\DoxyCodeLine{00069\ \ \ \}}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \textcolor{keywordtype}{void}\ dealloc()\{}
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keyword}{static\_cast<}\_Allocator*\textcolor{keyword}{>}(\textcolor{keyword}{this})-\/>deallocate(\_dat,\ \_Capacity);}
+\DoxyCodeLine{00073\ \ \ \}}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00076\ \ \ \textcolor{keyword}{typedef}\ \_Type\ type\_value;}
+\DoxyCodeLine{00077\ \ \ \textcolor{keyword}{typedef}\ \textcolor{keywordtype}{size\_t}\ size\_type;}
+\DoxyCodeLine{00078\ \ \ \textcolor{keyword}{typedef}\ \ \_Type\&\ reference;}
+\DoxyCodeLine{00079\ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{const}\ \_Type\&\ const\_reference;}
+\DoxyCodeLine{00080\ \ \ \textcolor{keyword}{typedef}\ \_Type*\ iterator;}
+\DoxyCodeLine{00081\ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{const}\ \_Type*\ const\_iterator;}
+\DoxyCodeLine{00082\ \ \ \textcolor{keyword}{typedef}\ \_Type*\ reverse\_iterator;}
+\DoxyCodeLine{00083\ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{const}\ \_Type*\ const\_reverse\_iterator;}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ }
+\DoxyCodeLine{00086\ \ \ \textcolor{comment}{//start\ of\ public\ interface}}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \ \ \_BCLCONSTEXPR20\ \_Type\&\ at(\textcolor{keywordtype}{size\_t}\ pos)\{}
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{keywordflow}{if}(\_size\ ==\ 0\ ||\ pos\ >\ \_size\ -\/\ 1)\{std::abort();\}}
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{keywordflow}{return}\ \_dat[pos];}
+\DoxyCodeLine{00091\ \ \ \}}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ \ \_BCLCONSTEXPR20\ \textcolor{keyword}{const}\ \_Type\&\ at(\textcolor{keywordtype}{size\_t}\ pos)\textcolor{keyword}{\ const}\{}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keywordflow}{if}(\_size\ ==\ 0\ ||\ pos\ >\ \_size\ -\/\ 1)\{std::abort();\}}
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{keywordflow}{return}\ \_dat[pos];}
+\DoxyCodeLine{00096\ \ \ \}}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \ \ \_BCLCONSTEXPR20\ \_Type\&\ operator[](\textcolor{keywordtype}{size\_t}\ pos)\{\textcolor{keywordflow}{return}\ \_dat[pos];\}}
+\DoxyCodeLine{00099\ \ \ \_BCLCONSTEXPR20\ \_Type\&\ front()\{\textcolor{keywordflow}{return}\ \_dat[0];\}}
+\DoxyCodeLine{00100\ \ \ \_BCLCONSTEXPR20\ \_Type\&\ back()\{\textcolor{keywordflow}{return}\ \_dat[\_size\ -\/\ 1];\}}
+\DoxyCodeLine{00101\ \ \ \_BCLCONSTEXPR20\ \_Type*\ data()\{\textcolor{keywordflow}{return}\ \_dat;\};}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \ \ \_BCLCONSTEXPR20\ \textcolor{keyword}{const}\ \_Type\&\ operator[](\textcolor{keywordtype}{size\_t}\ pos)\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ \_dat[pos];\}}
+\DoxyCodeLine{00104\ \ \ \_BCLCONSTEXPR20\ \textcolor{keyword}{const}\ \_Type\&\ front()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ \_dat[0];\}}
+\DoxyCodeLine{00105\ \ \ \_BCLCONSTEXPR20\ \textcolor{keyword}{const}\ \_Type\&\ back()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ \_dat[\_size\ -\/\ 1];\}}
+\DoxyCodeLine{00106\ \ \ \_BCLCONSTEXPR20\ \textcolor{keyword}{const}\ \_Type*\ data()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ \_dat;\};}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \ \ \_BCLCONSTEXPR20\ \textcolor{keywordtype}{bool}\ empty()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ \_size\ ==\ 0;\}}
+\DoxyCodeLine{00109\ \ \ \_BCLCONSTEXPR20\ \textcolor{keywordtype}{size\_t}\ size()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(\_size);\}}
+\DoxyCodeLine{00110\ \ \ \_BCLCONSTEXPR20\ \textcolor{keywordtype}{size\_t}\ max\_size()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(\_Capacity);\}}
+\DoxyCodeLine{00111\ \ \ \_BCLCONSTEXPR20\ \textcolor{keywordtype}{size\_t}\ capacity()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(\_Capacity);\}}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \ \ \_BCLCONSTEXPR20\ \_Type*\ begin()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ \_dat;\}}
+\DoxyCodeLine{00114\ \ \ \_BCLCONSTEXPR20\ \_Type*\ end()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ \_dat\ +\ (\_size);\}}
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00116\ \ \ \_BCLCONSTEXPR20\ \textcolor{keyword}{const}\ \_Type*\ cbegin()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ \_dat;\}}
+\DoxyCodeLine{00117\ \ \ \_BCLCONSTEXPR20\ \textcolor{keyword}{const}\ \_Type*\ cend()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ \_dat\ +\ (\_size);\}}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \ \ \textcolor{comment}{//\ standard\ vector\ functions(insert,\ erase,\ emplace,\ etc...)\ return\ iterators\ to\ combat\ vector\ growing\ and\ invalidating\ the\ immediate\ iterator,}}
+\DoxyCodeLine{00121\ \ \ \textcolor{comment}{//\ while\ we\ dont\ need\ to\ handle\ this,\ for\ api\ completeness\ we\ will\ mimic\ this\ and\ return\ iterators\ also.}}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ \ \ \textcolor{comment}{//\ in\ situations\ where\ a\ std::vector\ is\ expected\ to\ grow,\ we\ do\ nothing\ and\ let\ the\ program\ leak(continue\ in\ invalid\ state).\ ie\ no\ bounds\ checking\ in\ release.}}
+\DoxyCodeLine{00124\ \ \ \textcolor{comment}{//\ subject\ to\ change.}}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \ \ \textcolor{comment}{//\ for\ single\ element\ insertions\ if\ size\ <\ (\_Capacity\ -\/\ 1)\ ==\ false,\ we\ do\ not\ insert\ val.\ TLDR\ if\ full\ does\ nothing!}}
+\DoxyCodeLine{00127\ \ \ \textcolor{comment}{//\ for\ multi\ element\ insertions\ we\ insert\ from\ pos\ intell\ we\ reach\ max\ size;}}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ }
+\DoxyCodeLine{00130\ \ \ \_BCLCONSTEXPR20\ \textcolor{keywordtype}{void}\ clear()\{}
+\DoxyCodeLine{00131\ \ \ \ \ deconstruct(begin(),\ end());}
+\DoxyCodeLine{00132\ \ \ \ \ \_size\ =\ 0;}
+\DoxyCodeLine{00133\ \ \ \};}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00135\ \ \ \_BCLCONSTEXPR20\ \_Type*\ insert(\_Type*\ pos,\ \textcolor{keyword}{const}\ \_Type\&\ val)\{}
+\DoxyCodeLine{00136\ \ \ \ \ \textcolor{keywordflow}{if}(\_size\ ==\ \_Capacity)\{\textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};\}}
+\DoxyCodeLine{00137\ \ \ \ \ construct(end());}
+\DoxyCodeLine{00138\ \ \ \ \ std::move\_backward(pos,\ end()-\/1,\ end());}
+\DoxyCodeLine{00139\ \ \ \ \ *pos\ =\ val;}
+\DoxyCodeLine{00140\ \ \ \ \ \_size++;}
+\DoxyCodeLine{00141\ \ \ \ \ \textcolor{keywordflow}{return}\ pos;}
+\DoxyCodeLine{00142\ \ \ \}}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \ \_BCLCONSTEXPR20\ \_Type*\ insert(\_Type*\ pos,\ \_Type\&\&\ val)\{}
+\DoxyCodeLine{00145\ \ \ \ \ \textcolor{keywordflow}{if}(\_size\ ==\ \_Capacity)\{\textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};\}}
+\DoxyCodeLine{00146\ \ \ \ \ construct(end());}
+\DoxyCodeLine{00147\ \ \ \ \ std::move\_backward(pos,\ end()-\/1,\ end());}
+\DoxyCodeLine{00148\ \ \ \ \ *pos\ =\ val;}
+\DoxyCodeLine{00149\ \ \ \ \ \_size++;}
+\DoxyCodeLine{00150\ \ \ \ \ \textcolor{keywordflow}{return}\ pos;}
+\DoxyCodeLine{00151\ \ \ \}}
+\DoxyCodeLine{00152\ }
+\DoxyCodeLine{00153\ \ \ \_BCLCONSTEXPR20\ \textcolor{keywordtype}{void}\ assign(\textcolor{keywordtype}{size\_t}\ count,\ \_Type\&\ val)\{}
+\DoxyCodeLine{00154\ \ \ \ \ \_Type*\ rs\ =\ begin();}
+\DoxyCodeLine{00155\ \ \ \ \ \_Type*\ re\ =\ begin()\ +\ (count\ +\ 1);}
+\DoxyCodeLine{00156\ \ \ \ \ construct(rs,\ re);}
+\DoxyCodeLine{00157\ \ \ \ \ copy(rs,\ re,\ val);}
+\DoxyCodeLine{00158\ \ \ \ \ \_size\ =\ count;}
+\DoxyCodeLine{00159\ \ \ \}}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00161\ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{class\ }...\_Args>}
+\DoxyCodeLine{00162\ \ \_BCLCONSTEXPR20\ \textcolor{keywordtype}{void}\ emplace\_back(\_Args\&\&...\ args)\{}
+\DoxyCodeLine{00163\ \ \ \ \ \textcolor{keywordflow}{if}(\_size\ ==\ \_Capacity)\{\textcolor{keywordflow}{return};\}}
+\DoxyCodeLine{00164\ \ \ \ \ \_construct\_back(args...);}
+\DoxyCodeLine{00165\ \ \ \}}
+\DoxyCodeLine{00166\ }
+\DoxyCodeLine{00167\ \ \_BCLCONSTEXPR20\ \textcolor{keywordtype}{void}\ push\_back(\textcolor{keyword}{const}\ \_Type\&\ val)\{}
+\DoxyCodeLine{00168\ \ \ \ \ \textcolor{keywordflow}{if}(\_size\ ==\ \_Capacity)\{\textcolor{keywordflow}{return};\}}
+\DoxyCodeLine{00169\ \ \ \ \ \_construct\_back(val);}
+\DoxyCodeLine{00170\ \ \ \}}
+\DoxyCodeLine{00171\ }
+\DoxyCodeLine{00172\ \ \_BCLCONSTEXPR20\ \textcolor{keywordtype}{void}\ push\_back(\_Type\&\&\ val)\{}
+\DoxyCodeLine{00173\ \ \ \ \ \textcolor{keywordflow}{if}(\_size\ ==\ \_Capacity)\{\textcolor{keywordflow}{return};\}}
+\DoxyCodeLine{00174\ \ \ \ \ \_construct\_back(std::move(val));}
+\DoxyCodeLine{00175\ \ \ \}}
+\DoxyCodeLine{00176\ }
+\DoxyCodeLine{00177\ }
+\DoxyCodeLine{00178\ \ \ \_BCLCONSTEXPR20\ \textcolor{keywordtype}{void}\ resize(\textcolor{keywordtype}{size\_t}\ size)\{}
+\DoxyCodeLine{00179\ \ \ \ \ \textcolor{keywordflow}{if}(size\ >=\ \_Capacity)\{\textcolor{keywordflow}{return};\}}
+\DoxyCodeLine{00180\ \ \ \ \ \_Type*\ s;}
+\DoxyCodeLine{00181\ \ \ \ \ \_Type*\ e;}
+\DoxyCodeLine{00182\ }
+\DoxyCodeLine{00183\ \ \ \ \ \textcolor{keywordflow}{if}(size\ <\ \_size)\{}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ s\ =\ \_dat\ +\ size;}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ e\ =\ end();}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ deconstruct(s,\ e);}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \_size\ =\ size;}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00189\ \ \ \ \ \}}
+\DoxyCodeLine{00190\ }
+\DoxyCodeLine{00191\ }
+\DoxyCodeLine{00192\ \ \ \ \ \textcolor{keywordflow}{if}(size\ >\ \_size)\{}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ s\ =\ \_dat\ +\ \_size;}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ e\ =\ \_dat\ +\ size;}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ construct(s,\ e);\ }
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \_size\ =\ size;}
+\DoxyCodeLine{00197\ \ \ \ \ \}}
+\DoxyCodeLine{00198\ \ \ \}}
+\DoxyCodeLine{00199\ }
+\DoxyCodeLine{00200\ }
+\DoxyCodeLine{00201\ \ \_BCLCONSTEXPR20\ \textcolor{keywordtype}{void}\ pop\_back()\{}
+\DoxyCodeLine{00202\ \ \ \ \ \textcolor{keywordflow}{if}(\_size\ ==\ 0)\{\textcolor{keywordflow}{return};\}}
+\DoxyCodeLine{00203\ \ \ \ \ deconstruct(end()\ -\/\ 1);}
+\DoxyCodeLine{00204\ \ \ \ \ \_size-\/-\/;}
+\DoxyCodeLine{00205\ \ \ \}}
+\DoxyCodeLine{00206\ }
+\DoxyCodeLine{00207\ \ \ \textcolor{comment}{//\ non\ stl\ methods}}
+\DoxyCodeLine{00208\ \ \ \_BCLCONSTEXPR20\ \textcolor{keywordtype}{bool}\ full()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ \_size\ ==\ \_Capacity;\}}
+\DoxyCodeLine{00209\ \ \ \ \ \textcolor{keywordtype}{void}\ erase\_swap(\_Type*\ pos)\{}
+\DoxyCodeLine{00210\ \ \ \ \ std::swap(*pos,\ *(end()\ -\/\ 1));}
+\DoxyCodeLine{00211\ \ \ \ \ pop\_back();}
+\DoxyCodeLine{00212\ \ \ \}}
+\DoxyCodeLine{00213\ }
+\DoxyCodeLine{00214\ \ \ \textcolor{comment}{//\ extension\ of\ erase\_swap,\ inserts\ at\ end\ then\ swaps\ with\ pos\ iterator.}}
+\DoxyCodeLine{00215\ \ \_BCLCONSTEXPR20\ \textcolor{keywordtype}{void}\ insert\_swap(\_Type*\ pos,\ \textcolor{keyword}{const}\ \_Type\&\ val)\{}
+\DoxyCodeLine{00216\ \ \ \ \ \_bclassert\_msg(\_size\ \ +\ 1\ >\ \_Capacity,\ \textcolor{stringliteral}{"{}Vector\ at\ max\ capacity."{}});}
+\DoxyCodeLine{00217\ \ \ \ \ \_construct\_back(val);}
+\DoxyCodeLine{00218\ \ \ \ \ std::swap(*pos,\ *(end()\ -\/\ 1));}
+\DoxyCodeLine{00219\ \ \ \}}
+\DoxyCodeLine{00220\ }
+\DoxyCodeLine{00221\ \ \ iterator\ it(\textcolor{keywordtype}{size\_t}\ pos)\{}
+\DoxyCodeLine{00222\ \ \ \ \ \textcolor{keywordflow}{return}\ begin()\ +\ pos;}
+\DoxyCodeLine{00223\ \ \ \};}
+\DoxyCodeLine{00224\ }
+\DoxyCodeLine{00225\ }
+\DoxyCodeLine{00226\ }
+\DoxyCodeLine{00227\ }
+\DoxyCodeLine{00228\ \ \ \textcolor{comment}{//constructers}}
+\DoxyCodeLine{00229\ \ \_BCLCONSTEXPR20\ fixed\_vector():\_dat(0),\ \_size(0)\{}
+\DoxyCodeLine{00230\ \ \ \ \ alloc();}
+\DoxyCodeLine{00231\ \ \ \}}
+\DoxyCodeLine{00232\ }
+\DoxyCodeLine{00233\ \ \ \ \textcolor{keyword}{explicit}\ \_BCLCONSTEXPR20\ fixed\_vector(uint32\_t\ count):\_size(count)\{}
+\DoxyCodeLine{00234\ \ \ \ \ \ \_bclassert\_msg(count\ <=\ \_Capacity,\ \textcolor{stringliteral}{"{}fixed\ vector\ inistantiated\ with\ a\ size\ greater\ than\ fixed\ capacity"{}});}
+\DoxyCodeLine{00235\ \ \ \ \ \ alloc();}
+\DoxyCodeLine{00236\ \ \ \ \ \ construct(begin(),\ end());}
+\DoxyCodeLine{00237\ \ \ \ \}}
+\DoxyCodeLine{00238\ }
+\DoxyCodeLine{00239\ \ \ \ \textcolor{keyword}{explicit}\ \_BCLCONSTEXPR20\ fixed\_vector(uint32\_t\ count,\ \textcolor{keyword}{const}\ \_Type\&\ cpy):\_size(count)\{}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ alloc();}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ construct(begin(),\ end());}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ copy(begin(),\ end(),\ cpy);}
+\DoxyCodeLine{00243\ \ \ \ \}}
+\DoxyCodeLine{00244\ }
+\DoxyCodeLine{00245\ \ \ \ \textcolor{keyword}{explicit}\ \_BCLCONSTEXPR20\ fixed\_vector(\ \_Type*\ rs,\ \ \_Type*\ re)\{}
+\DoxyCodeLine{00246\ \ \ \ \ \_bclassert\_msg((re\ -\/\ rs)\ <=\ \_Capacity,\ \textcolor{stringliteral}{"{}range\ extendes\ past\ the\ max\ capacity\ of\ fixed\ vector."{}});}
+\DoxyCodeLine{00247\ \ \ \ \ alloc();}
+\DoxyCodeLine{00248\ \ \ \ \ \_Type*\ cur\ =\ begin();}
+\DoxyCodeLine{00249\ \ \ \ \ \textcolor{keywordflow}{while}(rs\ !=\ re)\{}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ construct(cur);}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ copy(cur,\ *rs);}
+\DoxyCodeLine{00252\ \ \ \ \ \ \ rs++;}
+\DoxyCodeLine{00253\ \ \ \ \ \ \ cur++;}
+\DoxyCodeLine{00254\ \ \ \ \ \}}
+\DoxyCodeLine{00255\ }
+\DoxyCodeLine{00256\ \ \ \ \ \_size\ \ =\ re\ -\/\ rs;}
+\DoxyCodeLine{00257\ \ \ \ \}}
+\DoxyCodeLine{00258\ }
+\DoxyCodeLine{00259\ \ \ \ \textcolor{keyword}{explicit}\ \_BCLCONSTEXPR20\ fixed\_vector(std::initializer\_list<\_Type>\ ilist)\{}
+\DoxyCodeLine{00260\ \ \ \ \ \_bclassert\_msg(ilist.size()\ <=\ \_Capacity,\ \textcolor{stringliteral}{"{}initializer\ list\ size\ is\ greater\ than\ max\ capacity."{}});}
+\DoxyCodeLine{00261\ \ \ \ \ alloc();}
+\DoxyCodeLine{00262\ \ \ \ \ \_Type*\ cur\ =\ begin();}
+\DoxyCodeLine{00263\ \ \ \ \ \textcolor{keywordflow}{for}(\textcolor{keyword}{const}\ \_Type\&\ v\ :\ ilist)\{}
+\DoxyCodeLine{00264\ \ \ \ \ \ \ construct(cur);}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ copy(cur,\ v);}
+\DoxyCodeLine{00266\ \ \ \ \ \ \ cur++;}
+\DoxyCodeLine{00267\ \ \ \ \ \}}
+\DoxyCodeLine{00268\ \ \ \ \ \_size\ =\ ilist.size();}
+\DoxyCodeLine{00269\ \ \ \ \}}
+\DoxyCodeLine{00270\ }
+\DoxyCodeLine{00271\ }
+\DoxyCodeLine{00272\ \ \ \_BCLCONSTEXPR20\ fixed\_vector(fixed\_vector\&\&\ other)\{}
+\DoxyCodeLine{00273\ \ \ \ \ this-\/>\_dat\ =\ other.\_dat;}
+\DoxyCodeLine{00274\ \ \ \ \ this-\/>\_size\ =\ other.\_size;}
+\DoxyCodeLine{00275\ \ \ \ \ other.\_dat\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00276\ \ \ \ \ other.\_size\ =\ 0;}
+\DoxyCodeLine{00277\ \ \ \}}
+\DoxyCodeLine{00278\ }
+\DoxyCodeLine{00279\ \ \ \_BCLCONSTEXPR20\ \string~fixed\_vector()\{dealloc();\}}
+\DoxyCodeLine{00280\ }
+\DoxyCodeLine{00281\ \ \ \textcolor{comment}{//\ TODO:\ implement\ these}}
+\DoxyCodeLine{00282\ \ \ \textcolor{comment}{//explicit\ \_BCLCONSTEXPR20\ fixed\_vector(uint32\_t\ count,\ \_Type\&\&\ mv):\_size(count)\{\}\ -\/\ impl}}
+\DoxyCodeLine{00283\ \ \ \textcolor{comment}{//\ \_BCLCONSTEXPR20\ fixed\_vector(const\ fixed\_vector\&\ other)\{\}}}
+\DoxyCodeLine{00284\ \ \ \textcolor{comment}{//\ \_Type*\ insert(\_Type*\ pos,\ size\_t\ count,\ const\ \_Type\&\ val)\{\}\ -\/-\/\ impl}}
+\DoxyCodeLine{00285\ \ \ \textcolor{comment}{//\ \_Type*\ insert(\_Type*\ pos,\ std::initializer\_list<\_Type>\ ilist)\{\}\ -\/-\/\ impl}}
+\DoxyCodeLine{00286\ \ \ \textcolor{comment}{//\ template<typename\ \_Ittype>\ \_Type*\ insert(\_Type*\ pos,\ \_Ittype\ start,\ \_Ittype\ last)\{\}\ -\/-\/\ impl}}
+\DoxyCodeLine{00287\ \ \ \textcolor{comment}{//\ void\ swap(fixed\_vector\ vec)\{\}\ -\/-\/impl}}
+\DoxyCodeLine{00288\ \ \ \textcolor{comment}{//void\ resize(size\_t\ size,\ const\ \_Type\&\ cpy)\{\}\ -\/-\/impl}}
+\DoxyCodeLine{00289\ \ \ \textcolor{comment}{//\ void\ erase(size\_t\ pos)\{\}\ -\/-\/impl}}
+\DoxyCodeLine{00290\ \ \ \textcolor{comment}{//\ void\ erase(\_Type*\ itr)\{\}\ -\/-\/impl}}
+\DoxyCodeLine{00291\ \ \ \textcolor{comment}{//\ \_Type*\ emplace()\{\}\ -\/-\/impl}}
+\DoxyCodeLine{00292\ \ \ \textcolor{comment}{//\ assign}}
+\DoxyCodeLine{00293\ }
+\DoxyCodeLine{00294\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00295\ \ \ \textcolor{comment}{//\ this\ sets\ internal\ buffer\ to\ a\ ptr\ w/\ preallocated\ memory.\ used\ mainly\ for\ a\ inline\ vector\ subclass.}}
+\DoxyCodeLine{00296\ \ \ \textcolor{comment}{//\ if\ a\ object\ is\ constructed\ with\ this,\ insure\ the\ base\ classes\ deconstructer\ is\ never\ called\ or\ it\ will\ try\ to\ free\ a\ random\ pointer.}}
+\DoxyCodeLine{00297\ \ \ \_BCLCONSTEXPR20\ fixed\_vector(\_Type*\ dat):\_dat(dat),\ \_size(0)\{\}}
+\DoxyCodeLine{00298\ }
+\DoxyCodeLine{00299\ \};\ \textcolor{comment}{//fixed\_vector}}
+\DoxyCodeLine{00300\ }
+\DoxyCodeLine{00301\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_Type,\ \textcolor{keywordtype}{size\_t}\ \_Size>}
+\DoxyCodeLine{00302\ \textcolor{keyword}{class\ }inline\_vector\ :\ \textcolor{keyword}{public}\ fixed\_vector<\_Type,\ \_Size>\{}
+\DoxyCodeLine{00303\ \ \ }
+\DoxyCodeLine{00304\ \ \ \_Type\ \_dat[\_Size]\ =\ \{\};}
+\DoxyCodeLine{00305\ \ \ }
+\DoxyCodeLine{00306\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00307\ \ \ inline\_vector():fixed\_vector<\_Type,\ \_Size>(\_dat)\{\}}
+\DoxyCodeLine{00308\ }
+\DoxyCodeLine{00309\ \};\ \textcolor{comment}{//inline\_vector}}
+\DoxyCodeLine{00310\ }
+\DoxyCodeLine{00311\ }
+\DoxyCodeLine{00312\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classbcl_1_1page__vector}{page\_vector}}\{}
+\DoxyCodeLine{00313\ }
+\DoxyCodeLine{00314\ \};\ \textcolor{comment}{//page\_vector}}
+\DoxyCodeLine{00315\ }
+\DoxyCodeLine{00316\ }
+\DoxyCodeLine{00317\ \}\ \textcolor{comment}{//\ bcl}}
+\DoxyCodeLine{00318\ }
+\DoxyCodeLine{00319\ }
+
+\end{DoxyCode}

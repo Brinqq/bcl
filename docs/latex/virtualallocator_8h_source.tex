@@ -1,0 +1,26 @@
+\doxysection{virtualallocator.\+h}
+\hypertarget{virtualallocator_8h_source}{}\label{virtualallocator_8h_source}\index{/Users/brinq/.dev/projects/bcl/src/include/bl/memory/virtualallocator.h@{/Users/brinq/.dev/projects/bcl/src/include/bl/memory/virtualallocator.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}bl/memory/memory.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}bl/features.h"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#if\ !defined(\_WIN32)\ \&\&\ !defined(\_\_linux\_\_)\ \&\&\ !defined(\_\_APPLE\_\_)}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#error\ uknown\ operating\ system\ cannot\ generate\ a\ valid\ implementation.}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{keyword}{namespace\ }bcl\{}
+\DoxyCodeLine{00012\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classbcl_1_1virtual__allocator}{virtual\_allocator}}\{}
+\DoxyCodeLine{00013\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00014\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00015\ \ \ \textcolor{keywordtype}{void}*\ reserve\_memory(\textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ bytes);}
+\DoxyCodeLine{00016\ \ \ \textcolor{keywordtype}{void}\ commit(\textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*\ addr,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ bytes);}
+\DoxyCodeLine{00017\ \ \ \textcolor{keywordtype}{void}\ free(\textcolor{keywordtype}{void}*\ addr);}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \};\ \textcolor{comment}{//virtual\_allocator}}
+\DoxyCodeLine{00020\ \}\ \textcolor{comment}{//bcl}}
+
+\end{DoxyCode}

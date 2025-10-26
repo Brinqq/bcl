@@ -1,0 +1,264 @@
+\doxysection{flatmap.\+h}
+\hypertarget{flatmap_8h_source}{}\label{flatmap_8h_source}\index{/Users/brinq/.dev/projects/bcl/src/include/bl/containers/flatmap.h@{/Users/brinq/.dev/projects/bcl/src/include/bl/containers/flatmap.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}bl/bldefines.h"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}functional"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{comment}{//\ Not\ thread\ safe.}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{keyword}{namespace\ }bl\{}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ \_K,\ \textcolor{keyword}{class}\ \_V,\ \textcolor{keyword}{class}\ \_Allocator\ =\ std::allocator<bl::\textcolor{keywordtype}{byte}>>}
+\DoxyCodeLine{00012\ \textcolor{keyword}{class\ }FlatMap\ :\ \textcolor{keyword}{private}\ \_Allocator\ \{}
+\DoxyCodeLine{00013\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{keyword}{struct\ }Node\{}
+\DoxyCodeLine{00016\ \ \ \_V\ value;}
+\DoxyCodeLine{00017\ \ \ \textcolor{keywordtype}{bool}\ isOccupied\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00018\ \};}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{keyword}{struct\ }EndSentinal\{}
+\DoxyCodeLine{00021\ \ \ uint8\_t\ end\ =\ 0xFF;}
+\DoxyCodeLine{00022\ \};}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{struct\ }iPair\{}
+\DoxyCodeLine{00025\ \ \ \_K\ key;}
+\DoxyCodeLine{00026\ \ \ \_V\&\ value;}
+\DoxyCodeLine{00027\ \};}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ std::hash<\_K>\ hasher;}
+\DoxyCodeLine{00030\ Node*\ pMem;}
+\DoxyCodeLine{00031\ uint32\_t\ size;}
+\DoxyCodeLine{00032\ \textcolor{keywordtype}{size\_t}\ maxSize;}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \textcolor{comment}{//\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_}}
+\DoxyCodeLine{00037\ \textcolor{comment}{//\ TODO:\ Add\ sentinel\ at\ end\ of\ buffer\ so\ iterator\ can\ drop\ the\ extra\ end\ pointer\ and\ fix\ the\ double\ loop\ on\ begin\ and\ end.}}
+\DoxyCodeLine{00038\ \textcolor{comment}{//\ just\ fix\ all\ this.}}
+\DoxyCodeLine{00039\ \textcolor{keyword}{class\ }iterator\{}
+\DoxyCodeLine{00040\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00041\ \ \ Node*\ itr;}
+\DoxyCodeLine{00042\ \ \ Node*\ end;}
+\DoxyCodeLine{00043\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00044\ \ \ iterator(Node*\ mem,\ Node*\ end):itr(mem),\ end(end)\{}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keywordflow}{while}(itr-\/>isOccupied\ ==\ \textcolor{keyword}{false}\ \&\&\ itr\ !=\ end)\{}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ itr++;}
+\DoxyCodeLine{00047\ \ \ \ \ \}}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keywordflow}{while}(this-\/>end-\/>isOccupied\ ==\ \textcolor{keyword}{false}\ \&\&\ this-\/>end\ !=\ itr)\{}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ this-\/>end-\/-\/;}
+\DoxyCodeLine{00051\ \ \ \ \ \}}
+\DoxyCodeLine{00052\ \ \ \}}
+\DoxyCodeLine{00053\ \ \ iterator(Node*\ mem):itr(mem)\{\ \}}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \ \ \_V\&\ operator*()\{\textcolor{keywordflow}{return}\ itr-\/>value;\}}
+\DoxyCodeLine{00056\ \ \ \textcolor{keywordtype}{bool}\ operator!=(\mbox{\hyperlink{classbl_1_1_flat_map_1_1iterator}{bl::FlatMap<\_K,\ \_V>::iterator}}\&\ other)\{\ \textcolor{keywordflow}{return}\ itr\ !=\ other.itr;\}}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ iterator\&\ operator++()\{}
+\DoxyCodeLine{00059\ \ \ \ \ itr++;}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keywordflow}{while}(itr-\/>isOccupied\ ==\ \textcolor{keyword}{false}\ \&\&\ itr\ !=\ end)\{}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ itr++;}
+\DoxyCodeLine{00062\ \ \ \ \ \}}
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00064\ \ \ \}}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \textcolor{comment}{//\ iterator\&\ operator++(int)\{}}
+\DoxyCodeLine{00067\ \ \ \textcolor{comment}{//\ \ \ itr++;}}
+\DoxyCodeLine{00068\ \ \ \textcolor{comment}{//\ \ \ while(itr-\/>freeFlag\ ==\ true\ \&\&\ itr\ !=\ end)\{}}
+\DoxyCodeLine{00069\ \ \ \textcolor{comment}{//\ \ \ \ \ itr++;}}
+\DoxyCodeLine{00070\ \ \ \textcolor{comment}{//\ \ \ \}}}
+\DoxyCodeLine{00071\ \ \ \textcolor{comment}{//\ \ \ return\ *this;}}
+\DoxyCodeLine{00072\ \ \ \textcolor{comment}{//\ \}}}
+\DoxyCodeLine{00073\ \};}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \ \ \textcolor{keyword}{inline}\ \mbox{\hyperlink{classbl_1_1_flat_map_1_1iterator}{iterator}}\ begin()\{\ }
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classbl_1_1_flat_map_1_1iterator}{iterator}}(pMem,\ (pMem\ +\ maxSize)\ +\ 1);}
+\DoxyCodeLine{00077\ \ \ \};}
+\DoxyCodeLine{00078\ \ \ \textcolor{keyword}{inline}\ iterator\ end()\{\textcolor{keywordflow}{return}\ iterator(pMem,\ (pMem\ +\ maxSize)\ +\ 1);\};}
+\DoxyCodeLine{00079\ \textcolor{comment}{//\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_}}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00082\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{size\_t}\ Hash(\textcolor{keyword}{const}\ \_K\&\ key)\{}
+\DoxyCodeLine{00083\ \ \ \textcolor{keywordflow}{return}\ hasher(key)\ \%\ (maxSize);}
+\DoxyCodeLine{00084\ \}\ }
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \textcolor{comment}{//@note\ returns\ -\/1\ if\ no\ avaliable\ index\ is\ found.}}
+\DoxyCodeLine{00088\ \textcolor{keyword}{inline}\ int32\_t\ ProbeForIndex(Node*\ buf,\ Node*\ end,\ Node*\ ptr)\{}
+\DoxyCodeLine{00089\ \ \ Node*\ itr\ =\ ptr;}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \ \ \textcolor{comment}{//when\ we\ prob\ from\ the\ beginning\ of\ the\ buffer\ since\ we\ use\ a\ while\ loop\ }}
+\DoxyCodeLine{00092\ \ \ \textcolor{comment}{//it\ will\ never\ find\ index\ 0\ causing\ us\ to\ return\ no\ index\ every\ time\ we\ need\ a\ 0\ index}}
+\DoxyCodeLine{00093\ \ \ \textcolor{comment}{//so\ we\ add\ this\ check.}}
+\DoxyCodeLine{00094\ \ \ \textcolor{comment}{//TODO:\ remove\ this\ check\ so\ we\ dont\ have\ branching\ here.}}
+\DoxyCodeLine{00095\ \ \ \textcolor{keywordflow}{if}(itr\ ==\ buf)\{}
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keywordflow}{if}(itr-\/>isOccupied\ ==\ \textcolor{keyword}{false}\ )\{}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ itr\ -\/\ buf;}
+\DoxyCodeLine{00098\ \ \ \ \ \}}
+\DoxyCodeLine{00099\ \ \ \}}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \ \ \textcolor{keywordflow}{while}(itr\ !=\ end)\{}
+\DoxyCodeLine{00102\ \ \ \ \ \textcolor{keywordflow}{if}(itr-\/>isOccupied\ ==\ \textcolor{keyword}{false})\{}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ itr\ -\/\ buf;}
+\DoxyCodeLine{00104\ \ \ \ \ \}}
+\DoxyCodeLine{00105\ \ \ \ \ itr++;}
+\DoxyCodeLine{00106\ \ \ \}}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \ \ itr\ =\ buf;}
+\DoxyCodeLine{00110\ \ \ \textcolor{keywordflow}{while}(itr\ !=\ ptr)\{}
+\DoxyCodeLine{00111\ \ \ \ \ \textcolor{keywordflow}{if}(itr-\/>isOccupied\ ==\ \textcolor{keyword}{false})\{}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ itr\ -\/\ buf;}
+\DoxyCodeLine{00113\ \ \ \ \ \}}
+\DoxyCodeLine{00114\ \ \ \ \ itr++;}
+\DoxyCodeLine{00115\ \ \ \}}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ \textcolor{keywordflow}{return}\ -\/1;}
+\DoxyCodeLine{00118\ \};}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}*\ Alloc(\textcolor{keyword}{const}\ uint32\_t\ size)\{}
+\DoxyCodeLine{00121\ \ \ \textcolor{keyword}{const}\ EndSentinal\ sentinel\{\};}
+\DoxyCodeLine{00122\ \ \ this-\/>maxSize\ =\ size;}
+\DoxyCodeLine{00123\ \ \ \_Allocator\&\ allocator\ =\ \textcolor{keyword}{static\_cast<}\_Allocator\&\textcolor{keyword}{>}(*this);}
+\DoxyCodeLine{00124\ \ \ Node*\ buf\ =\ (Node*)allocator.allocate((\textcolor{keyword}{sizeof}(Node)\ *\ maxSize)\ +\ \textcolor{keyword}{sizeof}(EndSentinal));}
+\DoxyCodeLine{00125\ \ \ memset(buf,\ 0,\ \textcolor{keyword}{sizeof}(Node)\ *\ maxSize);}
+\DoxyCodeLine{00126\ \ \ *((EndSentinal*)buf\ +\ (maxSize))\ =\ sentinel;}
+\DoxyCodeLine{00127\ \ \ \textcolor{keywordflow}{return}\ buf;}
+\DoxyCodeLine{00128\ \}}
+\DoxyCodeLine{00129\ }
+\DoxyCodeLine{00130\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ Dealloc(\textcolor{keywordtype}{void}*\ ptr)\{}
+\DoxyCodeLine{00131\ \ \ \_Allocator\&\ allocator\ =\ \textcolor{keyword}{static\_cast<}\_Allocator\&\textcolor{keyword}{>}(*this);}
+\DoxyCodeLine{00132\ \ \ allocator.deallocate((bl::byte*)ptr,\ maxSize\ *\ \textcolor{keyword}{sizeof}(Node));}
+\DoxyCodeLine{00133\ \}}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00135\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ Realloc(\textcolor{keyword}{const}\ uint32\_t\ size)\{}
+\DoxyCodeLine{00136\ \ \ \textcolor{comment}{//\ Node*\ newMem\ =\ (Node*)Alloc(size);}}
+\DoxyCodeLine{00137\ \ \ \textcolor{comment}{//\ Dealloc(pMem);}}
+\DoxyCodeLine{00138\ \ \ \textcolor{comment}{//\ pMem\ =\ newMem;}}
+\DoxyCodeLine{00139\ \};}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00142\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00143\ \textcolor{keyword}{inline}\ FlatMap()\{\}}
+\DoxyCodeLine{00144\ \textcolor{keyword}{inline}\ \string~FlatMap()\{\}}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00146\ \textcolor{comment}{//clears\ the\ entire\ buffer}}
+\DoxyCodeLine{00147\ \textcolor{comment}{//}}
+\DoxyCodeLine{00148\ \textcolor{comment}{//\ @param}}
+\DoxyCodeLine{00149\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ clear()\{\}}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ \textcolor{comment}{//\ Inserts\ a\ new\ node.}}
+\DoxyCodeLine{00152\ \textcolor{comment}{//}}
+\DoxyCodeLine{00153\ \textcolor{comment}{//\ @param\ [in]\ key\&\ -\/\ Key\ used\ to\ hash.}}
+\DoxyCodeLine{00154\ \textcolor{comment}{//\ @param\ [in]\ value\&\ -\/\ value\ to\ be\ stored.\ }}
+\DoxyCodeLine{00155\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ Insert(\_K\&\ key,\ \_V\&\ val)\{}
+\DoxyCodeLine{00156\ \ \ \ \ \textcolor{keywordflow}{if}(pMem\ ==\ \textcolor{keyword}{nullptr})\{pMem\ =\ (Node*)Alloc(10);\};}
+\DoxyCodeLine{00157\ \ \ \ \ }
+\DoxyCodeLine{00158\ \ \ \ \ size++;}
+\DoxyCodeLine{00159\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ index\ =\ Hash(key);}
+\DoxyCodeLine{00160\ \ \ \ \ Node*\ ptr\ =\ pMem\ +\ index;}
+\DoxyCodeLine{00161\ \ \ \ \ printf(\textcolor{stringliteral}{"{}Hash\ evaluated\ to\ \%zu\(\backslash\)n"{}},\ index);}
+\DoxyCodeLine{00162\ }
+\DoxyCodeLine{00163\ \ \ \ \ \textcolor{keywordflow}{if}(ptr-\/>isOccupied\ ==\ \textcolor{keyword}{true})\{}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}Collosion\ at\ index:\ \%zu\(\backslash\)n"{}},\ index,\ key);}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ index\ =\ ProbeForIndex(pMem,\ (pMem\ +\ size)\ +\ 1,\ pMem\ +\ index);}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \textcolor{keywordflow}{if}(index\ ==\ -\/1)\{}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}Reallocating\(\backslash\)n"{}});}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ Realloc(size\ *\ 2);}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\(\backslash\)n"{}});}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}Collosion\ resolved\ new\ index:\%zu\(\backslash\)n"{}},\ index);}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00174\ \ \ \ \ \ \ ptr\ =\ pMem\ +\ index;}
+\DoxyCodeLine{00175\ \ \ \ \ \}}
+\DoxyCodeLine{00176\ }
+\DoxyCodeLine{00177\ \ \ }
+\DoxyCodeLine{00178\ \ \ \ \ printf(\textcolor{stringliteral}{"{}inserting\ \%i\ at\ index\ \%zu\ -\/\ orginal\ hash\ \%i\(\backslash\)n"{}},\ val,\ index,\ key);}
+\DoxyCodeLine{00179\ \ \ \ \ printf(\textcolor{stringliteral}{"{}-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\(\backslash\)n"{}});}
+\DoxyCodeLine{00180\ \ \ \ \ ptr-\/>isOccupied\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00181\ \ \ \ \ ptr-\/>value\ =\ val;}
+\DoxyCodeLine{00182\ \}}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00184\ \textcolor{comment}{//\ Takes\ in\ a\ copy\ of\ \_Value\ and\ inserts\ it\ into\ a\ new\ node.}}
+\DoxyCodeLine{00185\ \textcolor{comment}{//}}
+\DoxyCodeLine{00186\ \textcolor{comment}{//\ @param\ [in]\ key\ -\/\ Key\ used\ to\ hash.}}
+\DoxyCodeLine{00187\ \textcolor{comment}{//\ @param\ [in]\ value\ -\/\ value\ to\ be\ stored.\ }}
+\DoxyCodeLine{00188\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ InsertCopy(\_K\ key,\ \_V\ val)\{}
+\DoxyCodeLine{00189\ \ \ \ \ \textcolor{keywordflow}{if}(pMem\ ==\ \textcolor{keyword}{nullptr})\{pMem\ =\ (Node*)Alloc(3);\};}
+\DoxyCodeLine{00190\ \ \ \ \ }
+\DoxyCodeLine{00191\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ index\ =\ Hash(key);}
+\DoxyCodeLine{00192\ \ \ \ \ Node*\ ptr\ =\ pMem\ +\ index;}
+\DoxyCodeLine{00193\ }
+\DoxyCodeLine{00194\ \ \ \ \ \textcolor{keywordflow}{if}(ptr-\/>isOccupied\ ==\ \textcolor{keyword}{true})\{}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \textcolor{comment}{//\ TODO:\ find\ next\ open\ slot}}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ index\ =\ ProbeForIndex(ptr);}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \textcolor{keywordflow}{if}(index\ ==\ -\/1)\{}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ Realloc();}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ probForIndex(ptr);}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00202\ }
+\DoxyCodeLine{00203\ \ \ \ \ \ \ ptr\ =\ pMem\ +\ index;}
+\DoxyCodeLine{00204\ \ \ \ \ \}}
+\DoxyCodeLine{00205\ }
+\DoxyCodeLine{00206\ \ \ \ \ ptr-\/>isOccupied\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00207\ \ \ \ \ ptr-\/>value\ =\ val;}
+\DoxyCodeLine{00208\ \}}
+\DoxyCodeLine{00209\ }
+\DoxyCodeLine{00210\ \textcolor{comment}{//\ Constructs\ object\ and\ inserts\ into\ map\ into\ map.}}
+\DoxyCodeLine{00211\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ FlatMap::InsertEmplace()\{}
+\DoxyCodeLine{00212\ }
+\DoxyCodeLine{00213\ \}}
+\DoxyCodeLine{00214\ }
+\DoxyCodeLine{00215\ }
+\DoxyCodeLine{00216\ \textcolor{comment}{//\ Constructs\ a\ flat\ map\ with\ a\ given\ std::initializer\_list.}}
+\DoxyCodeLine{00217\ \textcolor{comment}{//}}
+\DoxyCodeLine{00218\ \textcolor{comment}{//\ @param[in]\ std::inializer\_list<class,\ class>.}}
+\DoxyCodeLine{00219\ \textcolor{keyword}{inline}\ FlatMap(std::initializer\_list<iPair>\ list)\{}
+\DoxyCodeLine{00220\ \ \ size\ =\ list.size();}
+\DoxyCodeLine{00221\ \ \ Alloc(size\ *\ \textcolor{keyword}{sizeof}(Node));}
+\DoxyCodeLine{00222\ }
+\DoxyCodeLine{00223\ \ \ \textcolor{keywordflow}{for}(iPair\ e\ :\ list)\{}
+\DoxyCodeLine{00224\ \ \ \ \ Insert(e.key,\ e.value);}
+\DoxyCodeLine{00225\ \ \ \}}
+\DoxyCodeLine{00226\ \}}
+\DoxyCodeLine{00227\ }
+\DoxyCodeLine{00228\ }
+\DoxyCodeLine{00229\ \textcolor{comment}{//\ Resizes\ the\ the\ underlying\ buffer\ to\ fit\ the\ given\ size\ of\ elements.}}
+\DoxyCodeLine{00230\ \textcolor{comment}{//}}
+\DoxyCodeLine{00231\ \textcolor{comment}{//@param[in]\ size\ -\/\ how\ many\ elements\ the\ memory\ buffer\ will\ be\ able\ to\ hold.}}
+\DoxyCodeLine{00232\ \textcolor{comment}{//@note\ invalidates\ all\ iterators,\ and\ copies\ the\ current\ buffer\ data\ into\ the\ new\ allocated\ memory\ buffer.}}
+\DoxyCodeLine{00233\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ Reserve(\textcolor{keyword}{const}\ uint32\_t\ size)\{}
+\DoxyCodeLine{00234\ \ \ Node*\ pNewMemory\ =\ Alloc(size);}
+\DoxyCodeLine{00235\ }
+\DoxyCodeLine{00236\ \ \ Node*\ pEnd\ =\ pMem\ +\ maxSize;}
+\DoxyCodeLine{00237\ \ \ Node*\ itr\ =\ pMem;}
+\DoxyCodeLine{00238\ }
+\DoxyCodeLine{00239\ \ \ uint32\_t\ offset\ =\ 0;}
+\DoxyCodeLine{00240\ \ \ \textcolor{keywordflow}{while}(itr\ !=\ pEnd)\{}
+\DoxyCodeLine{00241\ \ \ \ \ \textcolor{keywordflow}{if}(itr-\/>isOccupied\ ==\ \textcolor{keyword}{true})\{}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ pNewMemory[offset].isOccupied\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \ pNewMemory[offset].val\ =\ pMem[offset].val;}
+\DoxyCodeLine{00244\ \ \ \ \ \}}
+\DoxyCodeLine{00245\ }
+\DoxyCodeLine{00246\ \ \ \ \ offset++;}
+\DoxyCodeLine{00247\ \ \ \ \ itr++;}
+\DoxyCodeLine{00248\ \ \ \}}
+\DoxyCodeLine{00249\ }
+\DoxyCodeLine{00250\ \ \ deconstruct(pMem);}
+\DoxyCodeLine{00251\ \ \ pMem\ =\ pNewMemory;}
+\DoxyCodeLine{00252\ \ \ maxSize\ =\ (size\ *\ \textcolor{keyword}{sizeof}(Node));}
+\DoxyCodeLine{00253\ \}}
+\DoxyCodeLine{00254\ }
+\DoxyCodeLine{00255\ \};}
+\DoxyCodeLine{00256\ }
+\DoxyCodeLine{00257\ \}}
+\DoxyCodeLine{00258\ }
+
+\end{DoxyCode}
