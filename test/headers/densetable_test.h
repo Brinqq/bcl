@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bl/containers/densetable.h"
+#include "bcl/containers/densetable.h"
 #include "test.h"
 
 #include "doctest/doctest.h"
