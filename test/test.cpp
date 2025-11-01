@@ -11,7 +11,7 @@
 #include "doctest/doctest.h"
 
 //enabled test_modules
-#include "headers/localallocator_test.h"
+#include "headers/vector_test.h"
 
 int main(int argc, char** argv) {
     doctest::Context context;
