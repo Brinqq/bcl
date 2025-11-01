@@ -542,6 +542,12 @@ public:
   //constructers
   small_vector():dat(inline_dat), cap(dat + _inline_max), cur(dat), sentinel(0){}
 
+  ~small_vector(){
+   if(sentinel == -1){
+    allocator.deallocate(dat, cap - dat);
+   } 
+  }
+
   //needed
   
   //_BCLCONSTEXPR11 void resize(){
