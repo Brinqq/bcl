@@ -45,7 +45,7 @@
 #ifdef _MSC_VER
 #define _BCL_EMPTY_ADRESS [[msvc::no_unique_address]]
 #else
-#define _BCL_EMPTY_ADRESS [[no_unique_address]]
+#define _BCLEMPTYADRESS [[no_unique_address]]
 #endif
 
 #else
