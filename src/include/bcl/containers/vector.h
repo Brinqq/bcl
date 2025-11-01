@@ -2,6 +2,7 @@
 
 #include "bcl/features.h"
 #include "bcl/assert.h"
+#include "bcl/defines.h"
 
 #include <initializer_list>
 #include <algorithm>
@@ -297,6 +298,42 @@ protected:
   _BCLCONSTEXPR20 fixed_vector(_Type* dat):_dat(dat), _size(0){}
 
 }; //fixed_vector
+  
+template<typename _Type, typename _Allocator>
+class vector_base{
+
+public:
+  typedef _Type value_type;
+  typedef size_t size_type;
+  typedef _Type* iterator;
+  typedef const _Type* const_iterator;
+  typedef _Type& reference;
+  typedef const _Type& const_reference;
+
+protected:
+
+_BCLCONSTEXPR11 void construct(_Type* s, _Type* e){
+
+}
+
+_BCLCONSTEXPR11 void deconstruct(_Type* s, _Type* e){
+
+}
+
+_BCLCONSTEXPR11 void grow(){
+
+}
+
+public:
+
+  //overloads
+
+  // template<typename _Vector>
+  // _BCLCONSTEXPR11 bool operator==(const _Vector& left, const _Vector& right){
+  //
+  // } 
+
+};//class vector_base
 
 template<typename _Type, size_t _Size>
 class inline_vector : public fixed_vector<_Type, _Size>{
@@ -314,6 +351,233 @@ class page_vector{
 }; //page_vector
 
 
+template<typename _Type, uint32_t _inline_max = 10, typename _Allocator = std::allocator<_Type>>
+class small_vector{
+private:
+
+  static _BCLCONSTEXPR11 float _growth_factor = 1.5;
+  static _BCLCONSTEXPR11 bool _memcpyable = std::is_trivially_copyable_v<_Type> && std::is_trivially_assignable_v<_Type, _Type>;
+
+  _Type* dat;
+  _Type* cap;
+  _Type* cur;
+  uint8_t sentinel;
+  _Type inline_dat[_inline_max];
+  _BCLEMPTYADRESS _Allocator allocator;
+
+
+_BCLCONSTEXPR11 void construct(_Type* begin, _Type* end){
+  while(begin != end){
+    new(begin) _Type();
+    begin++;
+  }
+}
+
+_BCLCONSTEXPR11 void deconstruct(_Type* begin, _Type* end){
+  while(begin != end){
+    *begin = ~_Type();
+    begin++;
+  }
+}
+
+_BCLCONSTEXPR11 void copy(const _Type* begin, const _Type* end, _Type* dst){
+  if _BCLCONSTEXPR14(_memcpyable){
+    size_t width = (begin - (end - 1)) * sizeof(_Type);
+    memcpy(dst, begin, width);
+
+  }else{
+
+    while(begin != end){
+    *dst = *begin;
+    dst++;
+    begin++;
+  }
+}
+
+}
+
+_BCLCONSTEXPR11 void grow(){
+  if(sentinel == 0){sentinel = -1;}
+
+  size_t size = cap - dat;
+  size_t new_size = size * _growth_factor;
+  size_t elements = cur - dat;
+
+  _Type* mem = allocator.allocate(new_size);
+
+  copy(dat, cur + 1, mem);
+  deconstruct(dat, cur + 1);
+
+  allocator.deallocate(dat, size);
+  dat = mem;
+  cap = dat + new_size;
+  cur = dat + elements;
+}
+
+public:
+  typedef _Type value_type;
+  typedef size_t size_type;
+  typedef _Type* iterator;
+  typedef const _Type* const_iterator;
+  typedef _Type& reference;
+  typedef const _Type& const_reference;
+
+
+  //operator overloads
+  _BCLCONSTEXPR11 _Type& operator[](size_t pos){return dat[pos];}
+  _BCLCONSTEXPR11 const _Type& operator[](size_t pos) const{return dat[pos];}
+
+
+  //standard member functions
+  
+  _BCLCONSTEXPR11 _Allocator get_allocator(){return allocator;}
+
+  _BCLCONSTEXPR11 _Type* data(){return dat;}
+  _BCLCONSTEXPR11 const _Type* data() const{return dat;}
+
+  _BCLCONSTEXPR11 _Type& at(size_t pos){return dat[pos];}
+  _BCLCONSTEXPR11 const _Type& at(size_t pos) const{return dat[pos];}
+
+  _BCLCONSTEXPR11 _Type& front(){
+    return *dat;
+  }
+
+  _BCLCONSTEXPR11 const _Type& front() const{
+    return *dat;
+  }
+
+  _BCLCONSTEXPR11 _Type& back(){return *cur;}
+  _BCLCONSTEXPR11 const _Type& back() const{return *cur;}
+
+  _BCLCONSTEXPR11 _Type* begin(){return dat;}
+  _BCLCONSTEXPR11 const _Type* cbegin() const{return dat;}
+
+  _BCLCONSTEXPR11 _Type* end(){return cur + 1;}
+  _BCLCONSTEXPR11 const _Type* end() const{return cur + 1;}
+
+  _BCLCONSTEXPR11 bool empty(){return dat == cur;}
+  _BCLCONSTEXPR11 size_t size(){return cur - dat;}
+  
+  _BCLCONSTEXPR11 size_t capacity(){
+    return cap - dat;
+  };
+  
+  _BCLCONSTEXPR11 void reserve(size_t elements){
+    if(elements <= _inline_max){return;}
+    if(sentinel == 0){sentinel = -1;}
+
+    size_t size = cap - dat;
+    size_t new_size = elements;
+    size_t s = cur - dat;
+
+  _Type* mem = allocator.allocate(new_size);
+
+    if(size != 0){
+      copy(dat, cur + 1, mem);
+      deconstruct(dat, cur + 1);
+    }
+
+    allocator.deallocate(dat, size);
+    dat = mem;
+    cap = dat + new_size;
+    cur = dat + s;
+
+  }
+
+
+  _BCLCONSTEXPR11 void clear(){
+    if(size() == 0){return;}
+    deconstruct(begin(), end());
+    cur = dat;
+  }
+
+  template<class ..._Args>
+  void emplace_back(_Args&& ...args){
+    if(cur + 1 >= cap){
+      grow();
+    }
+
+    new(cur) _Type(std::forward<_Args>(args)...);
+    cur++;
+    
+  }
+
+  _BCLCONSTEXPR11 void push_back(const _Type& type){
+    if(cur + 1 >= cap){
+      grow();
+    }
+
+    construct(cur, cur+1);
+    *cur = type;
+    cur++;
+  }
+
+  _BCLCONSTEXPR11 void push_back(_Type&& type){
+    if(cur + 1 >= cap){
+      grow();
+    }
+
+    construct(cur, cur+1);
+    *cur = std::move(type);
+    cur++;
+  }
+
+  _BCLCONSTEXPR11 void pop_back(){
+    if(size() == 0){return;}
+    deconstruct(cur-1, cur);
+    cur--;
+  }
+
+  //Non standard member functions
+
+ _BCLCONSTEXPR11 void insert_swap(size_t pos){
+    std::swap(dat[pos], dat[cur-dat]);
+ };
+
+ _BCLCONSTEXPR11 void insert_swap(_Type* pos){
+    std::swap(*pos, *(cur - 1));
+ };
+
+  
+  //constructers
+  small_vector():dat(inline_dat), cap(dat + _inline_max), cur(dat), sentinel(0){}
+
+  //needed
+  
+  //_BCLCONSTEXPR11 void resize(){
+  // IMPL
+  // }
+
+  //insert()
+  //...
+  
+  //emplace()
+  //...
+
+  //shrink_to_fit()
+
+  //_BCLCONSTEXPR11 size_t max_size(){
+  //  IMPL
+  //}
+
+  // _BCLCONSTEXPR11 _Type* erase(_Type* pos){
+  //  //IMPL
+  // }
+  
+  // _BCLCONSTEXPR11 _Type* erase(const _Type* pos){
+  //   //IMPL
+  // }
+
+  
+  // _BCLCONSTEXPR11 _Type* erase(_Type* first, _Type* last){
+  //   //IMPL
+  // }
+
+  // _BCLCONSTEXPR11 _Type* erase(const _Type* first, const _Type* last){
+  //   //IMPL
+  // }
+
+};//small vector
+
+
 } // bcl
-
-
