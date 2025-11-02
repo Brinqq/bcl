@@ -452,8 +452,8 @@ public:
   _BCLCONSTEXPR11 _Type* begin(){return dat;}
   _BCLCONSTEXPR11 const _Type* cbegin() const{return dat;}
 
-  _BCLCONSTEXPR11 _Type* end(){return cur + 1;}
-  _BCLCONSTEXPR11 const _Type* end() const{return cur + 1;}
+  _BCLCONSTEXPR11 _Type* end(){return cur;}
+  _BCLCONSTEXPR11 const _Type* end() const{return cur;}
 
   _BCLCONSTEXPR11 bool empty(){return dat == cur;}
   _BCLCONSTEXPR11 size_t size(){return cur - dat;}
@@ -522,14 +522,14 @@ public:
 
   _BCLCONSTEXPR11 void pop_back(){
     if(size() == 0){return;}
-    deconstruct(cur-1, cur);
     cur--;
+    cur->~_Type();
   }
 
   //Non standard member functions
 
  _BCLCONSTEXPR11 void insert_swap(size_t pos){
-    std::swap(dat[pos], dat[cur-dat]);
+    std::swap(dat[pos], dat[(cur- dat -1)]);
  };
 
  _BCLCONSTEXPR11 void insert_swap(_Type* pos){
