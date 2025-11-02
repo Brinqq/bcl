@@ -375,7 +375,7 @@ _BCLCONSTEXPR11 void construct(_Type* begin, _Type* end){
 
 _BCLCONSTEXPR11 void deconstruct(_Type* begin, _Type* end){
   while(begin != end){
-    *begin = ~_Type();
+    begin->~_Type();
     begin++;
   }
 }
@@ -502,23 +502,21 @@ public:
     
   }
 
-  _BCLCONSTEXPR11 void push_back(const _Type& type){
+  _BCLCONSTEXPR11 void push_back(const _Type& val){
     if(cur + 1 >= cap){
       grow();
     }
 
-    construct(cur, cur+1);
-    *cur = type;
+    new(cur) _Type(val);
     cur++;
   }
 
-  _BCLCONSTEXPR11 void push_back(_Type&& type){
+  _BCLCONSTEXPR11 void push_back(_Type&& val){
     if(cur + 1 >= cap){
       grow();
     }
 
-    construct(cur, cur+1);
-    *cur = std::move(type);
+    new(cur) _Type(std::move(val));
     cur++;
   }
 
