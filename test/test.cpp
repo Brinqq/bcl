@@ -6,12 +6,18 @@
 #include "bcl/containers/vector.h" // IWYU pragma: keep
 #include "bcl/containers/freelist.h" // IWYU pragma: keep
 #include "bcl/memory/virtualallocator.h" // IWYU pragma: keep
+#include "bcl/containers/span.h" //IWYU pragma: keep
+#include "bcl/containers/bucket.h"
+
+
+bk::span<int> x{};
+bk::bucket<uint64_t, 20> k{};
 
 #define DOCTEST_CONFIG_IMPLEMENT
 #include "doctest/doctest.h"
 
 //enabled test_modules
-#include "headers/vector_test.h"
+#include "headers/bucket_test.h"
 
 int main(int argc, char** argv) {
     doctest::Context context;

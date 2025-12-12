@@ -107,7 +107,6 @@ template class bcl::small_vector<int>;
 TEST_CASE("small_vector::constructers"){
   bcl::small_vector<int> a;
   bcl::small_vector<SimpleType> t;
-
 }
 
 
