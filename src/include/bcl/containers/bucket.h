@@ -36,6 +36,8 @@ class bucket{
   static_assert(sizeof(_Type) >= sizeof(uintptr_t), 
               "::bucket error, sizeof(_Type) must be alteast large enough to store a pointer.");
 
+  //NOTE: Due to the goal of keeping the container compact, we dont store the metadata required to manage raii.
+  //clean up responsability is pushed onto the user before calling destruct().
   static_assert(std::is_trivially_destructible<_Type>::value &&
                 std::is_trivially_constructible<_Type>::value &&
                 std::is_trivially_copyable<_Type>::value,
