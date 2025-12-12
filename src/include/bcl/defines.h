@@ -1,4 +1,8 @@
 #pragma once
+#include <stddef.h>
+#include <stdint.h>
+#include <assert.h>
+#include <type_traits>
 
 
 namespace bcl{
