@@ -6,6 +6,20 @@
 
 namespace bk{
 
+/**
+ *
+ * \class bucket
+ * \brief A growable sparse array that mantains stable pointers/references.
+ *
+ * This is container is attended to provide stable pointers while maintaining a very low inline storage footprint
+ * at the cost of some functionality that u might see in a typical stl container. Due to the small amount of metadata
+ * used internaly this container may suffer from fragmentation after long periods of time, its recommend that
+ * the user provides a mean to reset periodically.
+ *
+ * \tparam _Type Containers element type.
+ * \tparam _Size Size of the individual memory batches.
+ *
+*/
 template<typename _Type, size_t _Size>
 class bucket{
 
@@ -57,11 +71,63 @@ class bucket{
 
   };
 
+  int block_count()const{
+    int ret = 1;
+    block* itr = blocks;
+    if(itr == nullptr){return 0;}
+
+    while(itr->next != nullptr){
+      itr = itr->next;
+      ret++;
+    }
+
+    return ret;
+  }
+
  public:
 
+ //TODO: implement these
+ // size_t available(){}
+ // size_t size(){}
  
- // Not to be confused with clear, when reset() is called
- // all internal memory is freed. Pushing to bucket after reset will dynamically allocate again.
+ /**
+  *
+  * \fn capacity
+  * \brief Gets the current max elements this container can hold.
+  * \return Max count.
+  *
+  */
+ size_t capacity()const{
+  return block_count() * _Size;
+ }
+
+ 
+// void reserve(size_t count){
+//   size_t cur = capacity();
+//   if (cur >= count)return;
+//   int bc = (count - cur) / _Size + 1;
+//
+//   for(int i = 0; i < bc; ++i){
+//     grow();
+//   }
+// }
+
+  /**
+   *
+   * \fn bytes
+   * \brief Gets the total memory block allocated in raw bytes.
+   * \return Total bytes allocated.
+   */
+ size_t total_bytes()const{
+  return block_count() * allocation_size;
+ }
+ 
+ /**
+  *
+  * \fn reset
+  * \brief Deallocates all internal memory and drops stable pointers.
+  *
+ */
  void reset(){
   block* itr = blocks;
 
@@ -75,7 +141,16 @@ class bucket{
   entry_head = nullptr;
  }
 
- _Type& construct(){
+/**
+ *
+ * \fn construct
+ * \brief allocates a object
+ * \ret _Type& reference to constructed object.
+ * \attention The user must take return by memory, calling destruct with a copied value will cause
+ * the next construct call to access undefined memory.
+ *
+*/
+ _bknodiscard _Type& construct(){
 
   if(entry_head == nullptr){
     grow();
@@ -87,17 +162,16 @@ class bucket{
   return ret->value;
  }
 
+/** 
+ * \fn destruct
+ * \param ref Reference to a constructed object
+ */
  void destruct(_Type& ref){
    entry* ent = reinterpret_cast<entry*>(&ref);
     ent->next = entry_head;
     entry_head = ent;
  }
 
-  //TODO: maybe implement these
-  // size_t capacity();
-  // void reserve();
-  // size_t size();
-  // size_t available()
 
  bucket():entry_head(nullptr), blocks(nullptr){}
 
