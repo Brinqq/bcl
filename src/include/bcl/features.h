@@ -109,7 +109,7 @@
 #endif
 
 #else
-#define _bkconstexpr
+#define _bkconstexpr20
 #define _bk_empty_adress
 #endif
 
