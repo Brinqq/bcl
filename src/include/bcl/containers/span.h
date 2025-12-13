@@ -31,6 +31,10 @@ public:
     return dat;
   }
 
+  iterator begin()const{
+    return dat;
+  }
+
   const_iterator cbegin()const{
     return dat;
   }
@@ -166,10 +170,26 @@ public:
   }
 
   span (span&& other){
+    if(this == &other){return;}
     dat = other.dat;   
     elements = other.elements;
     other.dat = nullptr;
     other.elements = 0;
+  }
+
+  span operator=(const span& other){
+    dat = other.dat;
+    elements = other.elements;
+    return *this;
+  }
+
+  span operator=(span&& other){
+    if(this == &other){return *this;}
+    dat = other.dat;   
+    elements = other.elements;
+    other.dat = nullptr;
+    other.elements = 0;
+    return *this;
   }
 
 };
