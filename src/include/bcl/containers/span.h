@@ -1,4 +1,6 @@
 #pragma once
+#include "bcl/features.h"
+
 #include <stdint.h>
 #include <stddef.h>
 #include <algorithm>
@@ -27,114 +29,121 @@ public:
   typedef const _Type& const_reference;
 
 
-  iterator begin(){
-    return dat;
+  _bkconstexpr20 iterator begin(){
+   return dat;
   }
 
-  iterator begin()const{
-    return dat;
+ _bkconstexpr20 iterator begin()const{
+   return dat;
   }
 
-  const_iterator cbegin()const{
-    return dat;
+  _bkconstexpr20 const_iterator cbegin()const{
+   return dat;
   }
 
-  reverse_iterator rbegin(){
-    return (dat + elements) - 1;
+  _bkconstexpr20 reverse_iterator rbegin(){
+   return (dat + elements) - 1;
   }
 
-  const_reverse_iterator crbegin()const{
-    return (dat + elements) - 1;
+  _bkconstexpr20 const_reverse_iterator crbegin()const{
+   return (dat + elements) - 1;
   }
 
-  iterator end(){
-    return dat + elements;
+  _bkconstexpr20 iterator end(){
+   return dat + elements;
   }
 
-  const_iterator cend()const{
-    return dat + elements;
+  _bkconstexpr20 iterator end()const{
+   return dat + elements;
   }
 
-  reverse_iterator rend()const{
-    return dat - 1;
+  _bkconstexpr20 const_iterator cend()const{
+   return dat + elements;
   }
 
-  const_reverse_iterator crend()const{
-    return dat - 1;
+  _bkconstexpr20 reverse_iterator rend()const{
+   return dat - 1;
   }
 
-  reference front(){
-    return *dat;
-  }
-  const_reference front()const{
-    return *dat;
+  _bkconstexpr20 const_reverse_iterator crend()const{
+   return dat - 1;
   }
 
-  reference back(){
-    return *(end() - 1);
+   _bkconstexpr20 reference front(){
+   return *dat;
+  }
+  _bkconstexpr20 const_reference front()const{
+   return *dat;
   }
 
-  const_reference back()const{
-    return *(end() - 1);
+  _bkconstexpr20 reference back(){
+   return *(end() - 1);
   }
 
-  reference at(size_t pos){
-    // TODO: oob check here.
-    return *(dat + pos);
-  }
-  const_reference at(size_t pos)const{
-    // TODO: oob check here.
-    return *(dat + pos);
+  _bkconstexpr20 const_reference back()const{
+   return *(end() - 1);
   }
 
-  pointer data(){
-    return dat;
-  }
-  const_pointer data()const{
-    return dat;
+  _bkconstexpr20 reference at(size_t pos){
+   // TODO: oob check here.
+   return *(dat + pos);
   }
 
-  size_t size()const{
-    return elements;
-  }
-  size_t size_bytes()const{
-    return elements * sizeof(_Type);
+  _bkconstexpr20 const_reference at(size_t pos)const{
+   // TODO: oob check here.
+   return *(dat + pos);
   }
 
-  bool empty()const{
-    return elements == 0;
+  _bkconstexpr20 pointer data(){
+   return dat;
   }
 
-  span first(size_t count){
-    return span(dat, count);
+  _bkconstexpr20 const_pointer data()const{
+   return dat;
   }
 
-  span last(size_t count){
-    return span(end() - count, count);
+  _bkconstexpr20 size_t size()const{
+   return elements;
   }
 
-  span subspan(iterator itr, size_t count){
-    return span(itr, count);  
+  _bkconstexpr20 size_t size_bytes()const{
+   return elements * sizeof(_Type);
   }
 
-  span subspan(size_t pos, size_t count){
-    return span(dat + pos, count);  
+  _bkconstexpr20 bool empty()const{
+   return elements == 0;
   }
 
-  const span first(size_t count)const{
-    return span(dat, count);
+  _bkconstexpr20 span first(size_t count){
+   return span(dat, count);
   }
 
-  const span last(size_t count)const{
-    return span(end() - count, count);
+  _bkconstexpr20 span last(size_t count){
+   return span(end() - count, count);
   }
 
-  const span subspan(iterator itr, size_t count)const{
-    return span(itr, count);  
+  _bkconstexpr20 span subspan(iterator itr, size_t count){
+   return span(itr, count);  
   }
 
-  const span subspan(size_t pos, size_t count)const{
-    return span(dat + pos, count);  
+  _bkconstexpr20 span subspan(size_t pos, size_t count){
+   return span(dat + pos, count);  
+  }
+
+  _bkconstexpr20 const span first(size_t count)const{
+   return span(dat, count);
+  }
+
+  _bkconstexpr20 const span last(size_t count)const{
+   return span(end() - count, count);
+  }
+
+  _bkconstexpr20 const span subspan(iterator itr, size_t count)const{
+   return span(itr, count);  
+  }
+
+  _bkconstexpr20 const span subspan(size_t pos, size_t count)const{
+   return span(dat + pos, count);  
   }
 
   //custom functions
