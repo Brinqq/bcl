@@ -65,8 +65,8 @@ class bucket{
     it->next = mem;
   }
   
-    for(size_t i = _Size - 1; i >= 0; --i){
-      entry* e = reinterpret_cast<entry*>(&mem->data[i]);
+    for(size_t i = _Size; i > 0; --i){
+      entry* e = reinterpret_cast<entry*>(&mem->data[i - 1]);
       e->next = entry_head;
       entry_head = e;
     }
