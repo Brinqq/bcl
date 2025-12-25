@@ -28,8 +28,8 @@ public:
   * \fn Set
   * \brief Iniitializes internal state to the passed memory buffer.
   *
-  * \param[in] pMemory - pointer to preallocated memory buffer.
-  * \param[in] bytes - total size of the memory buffer in bytes.
+  * \param void*[in] - pointer to preallocated memory buffer.
+  * \param size_t[in] - total size of the memory buffer in bytes.
   *
   * \note pMemory is assumed to be aligned to the templated _Align argument
   * and bytes param must be correct aligned size.
@@ -44,8 +44,8 @@ public:
   * \fn CanAlloc
   * \brief Checks if there is enough space to allocate.
   *
-  * \param[in] bytes - how many bytes is attempted to be allocated.
-  * \returns - if a allocation would succeed.
+  * \param size_t[in] - how many bytes is attempted to be allocated.
+  * \ret if a allocation would succeed.
   **/
   bool CanAlloc(const size_t bytes) const{
     if( mCur + (bk::AlignP2(bytes, _Align)) > mEnd){
@@ -58,8 +58,8 @@ public:
   * \fn Alloc
   * \brief Allocates memory.
   *
-  * \param[in] bytes - how much memory to allocate space for in bytes.
-  * \returns - pointer to the allocated memory.
+  * \param size_t[in] - how much memory to allocate space for in bytes.
+  * \ret pointer to the allocated memory.
   *
   * \warn - no bounds checking done, if allocator succeeds the end of memory block this function
   * returns a pointer to unknown memory.
@@ -74,8 +74,8 @@ public:
   * \fn TryAlloc
   * \brief Attempts to allocate memory.
   *
-  * @param[in] bytes - how much memory to allocate space for in bytes.
-  * @returns - if allocation is successful returns pointer to address else returns nullptr.
+  * \param size_t[in] - how much memory to allocate space for in bytes.
+  * \ret if allocation is successful returns pointer to address else returns nullptr.
   **/
   void* TryAlloc(size_t bytes){
     if(CanAlloc(bytes)){
@@ -88,7 +88,7 @@ public:
   * \fn Alignment
   * \brief Get the allocators memory alignment.
   *
-  * \returns - size_t alignment.
+  * \ret size_t alignment.
   **/
  _bkconstexpr11 size_t Alignment() const{
     return _Align;
@@ -98,7 +98,7 @@ public:
   * \fn Empty
   * \brief Checks if the allocator is empty.
   *
-  * @returns - boolean.
+  * \ret boolean.
   **/
   _bknodiscard bool Empty() const{
     return mCur == mStart;
@@ -108,7 +108,7 @@ public:
   * \fn Reset
   * \brief Resets buffer.
   *
-  * \note - resetting the buffer does not set memory to zero rather resets pointer to 
+  * \note resetting the buffer does not set memory to zero rather resets pointer to 
   * beginning of buffer and starts allocating from there.
   **/
   void Reset(){
