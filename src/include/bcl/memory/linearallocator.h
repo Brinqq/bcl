@@ -74,8 +74,8 @@ public:
   * \fn TryAlloc
   * \brief Attempts to allocate memory.
   *
-  * @param[in] bytes - how much memory to allocate space for in bytes.
-  * @returns - if allocation is successful returns pointer to address else returns nullptr.
+  * \param[in] bytes - how much memory to allocate space for in bytes.
+  * \returns - if allocation is successful returns pointer to address else returns nullptr.
   **/
   void* TryAlloc(size_t bytes){
     if(CanAlloc(bytes)){
