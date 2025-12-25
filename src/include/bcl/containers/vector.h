@@ -7,7 +7,6 @@
 #include <initializer_list>
 #include <algorithm>
 
-
 namespace bcl{
 
 template<typename _Type, uint32_t _Capacity, typename _Allocator = std::allocator<_Type>>
@@ -346,12 +345,7 @@ public:
 }; //inline_vector
 
 
-class page_vector{
-
-}; //page_vector
-
-
-template<typename _Type, uint32_t _inline_max = 10, typename _Allocator = std::allocator<_Type>>
+template<typename _Type, uint32_t _inline_max = 5, typename _Allocator = std::allocator<_Type>>
 class small_vector{
 private:
 
@@ -414,6 +408,16 @@ _BCLCONSTEXPR11 void grow(){
   cur = dat + elements;
 }
 
+#if defined(_BCL_SMVECTOR_ENABLE_LOG_SPILL) && !defined(NDEBUG)
+  void log_spill(){}
+#else
+  void log_spill(){}
+#endif
+
+
+#if defined(_BCL_SMVECTOR_ENABLE_INLINE_DEBUG) && !defined(NDEBUG)
+#endif
+
 public:
   typedef _Type value_type;
   typedef size_t size_type;
@@ -421,7 +425,6 @@ public:
   typedef const _Type* const_iterator;
   typedef _Type& reference;
   typedef const _Type& const_reference;
-
 
   //operator overloads
   _BCLCONSTEXPR11 _Type& operator[](size_t pos){return dat[pos];}
@@ -526,6 +529,68 @@ public:
     cur->~_Type();
   }
 
+  // _BCLCONSTEXPR11 _Type* insert(const _Type* pos, const _Type& val){
+  //   uint32_t index = pos - dat;
+  //   if(cur == cap){
+  //     grow();
+  //     pos = dat + index;
+  //   } 
+  //     for(_Type* itr = end(); itr != pos; --itr){
+  //       *itr = std::move(*(itr - 1));
+  //     }
+  //
+  //     *(dat + (index - 1)) = val;
+  //     cur++;
+  // }
+  //
+  // _BCLCONSTEXPR11 _Type* insert(const _Type* pos, _Type&& val){
+  //   uint32_t index = pos - dat;
+  //   if(cur == cap){
+  //     grow();
+  //     pos = dat + index;
+  //   } 
+  //     for(_Type* itr = end(); itr != pos; --itr){
+  //       *itr = std::move(*(itr - 1));
+  //     }
+  //
+  //     *(dat + (index - 1)) = std::move(val);
+  //     cur++;
+  //
+  // }
+
+  _BCLCONSTEXPR11 void resize(uint32_t count){
+    if(count > cap - dat){grow();}
+    size_t local_size = size();
+    _Type* itr = dat + count;
+
+    if(count < local_size){
+      deconstruct(itr  , cur);
+      cur = itr;
+    };
+
+    if(count > local_size){
+      construct(cur, itr);
+      cur = itr;
+    };
+  }
+
+  _BCLCONSTEXPR11 void resize(uint32_t count, const _Type& val){
+    if(count > cap - dat){grow();}
+    size_t local_size = size();
+    _Type* itr = dat + count;
+
+    if(count < local_size){
+      deconstruct(itr  , cur);
+      cur = itr;
+    };
+
+    if(count > local_size){
+      std::fill(cur, itr,  val);
+      cur = itr;
+    };
+    
+  }
+
   //Non standard member functions
 
  _BCLCONSTEXPR11 void insert_swap(size_t pos){
@@ -546,21 +611,11 @@ public:
    } 
   }
 
-  //needed
-  
-  //_BCLCONSTEXPR11 void resize(){
-  // IMPL
-  // }
-
-  //insert()
-  //...
-  
   //emplace()
   //...
 
   //shrink_to_fit()
-
-  //_BCLCONSTEXPR11 size_t max_size(){
+//_BCLCONSTEXPR11 size_t max_size(){
   //  IMPL
   //}
 
