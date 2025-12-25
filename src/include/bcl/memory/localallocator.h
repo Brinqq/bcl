@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bcl/memory/memory.h"
+#include "bcl/memory/bkmemory.h"
 #include "bcl/features.h"
 
 
@@ -20,7 +20,7 @@ private:
   byte* end;
   alignas(_Alignment) char dat[_Bytes];
   uint8_t overflow = 0;
-  _BCL_EMPTY_ADRESS _Allocator fallback_allocator;
+  _BCLEMPTYADRESS _Allocator fallback_allocator;
 
 
 public:

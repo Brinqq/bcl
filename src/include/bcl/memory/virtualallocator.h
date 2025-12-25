@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "bcl/memory/memory.h"
+#include "bcl/memory/bkmemory.h"
 #include "bcl/features.h"
 
 #if !defined(_WIN32) && !defined(__linux__) && !defined(__APPLE__)
