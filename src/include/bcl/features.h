@@ -118,8 +118,3 @@
 #else
 #define _bkconsteval
 #endif
-
-
-  
-
-
