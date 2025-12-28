@@ -1,31 +1,24 @@
 cmake_minimum_required(VERSION 4.0.2)
-project(bl)
+project(bk)
 
 set(SRC_FILES
     mem.cpp
     virtualallocator.cpp
 )
 
-set(CMAKE_CXX_STANDARD 20)
-
-option(CHECK_INLINE "enables debug inline checking utils" OFF)
+option(BK_DEV_CHECK_INLINE "enables debug inline checking utils" OFF)
+option(BK_BUILD_DEBUG OFF)
+option(BK_BUILD_DEV OFF)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
 endif()
 
+message("Current source dir: ${CMAKE_CURRENT_SOURCE_DIR}")
+
 set(INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include")
+
 set(ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/..")
-set(BIN_DIR "${CMAKE_BINARY_DIR}/bin")
-set(LIB_DIR "${CMAKE_BINARY_DIR}/lib")
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LIB_DIR})
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${LIB_DIR})
-
-set(CXX_FLAGS "-Wall")
-
-
 
 #platform specific
 if (WIN32)
@@ -45,8 +38,8 @@ if (APPLE)
 endif()
  
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-  if(CHECK_INLINE)
+if(BK_BUILD_DEV)
+  if(BK_DEV_CHECK_INLINE)
     message("Debug inline information enabled.")
     list(APPEND CXX_FLAGS -finline-functions)
     list(APPEND CXX_FLAGS -Rpass=inline)
@@ -57,7 +50,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_executable(${PROJECT_NAME} ${SRC_FILES})
 else()
   add_library(${PROJECT_NAME} STATIC ${SRC_FILES})
-  set(CXX_FLAGS "${CXX_FLAGS} -O2")
 endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIRS})
