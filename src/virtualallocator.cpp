@@ -1,5 +1,5 @@
 #include "bcl/memory/virtualallocator.h"
-#include "bcl/memory/memory.h"
+#include "bcl/memory/bkmemory.h"
 #include "bcl/assert.h"
 
 #include <stdio.h>
