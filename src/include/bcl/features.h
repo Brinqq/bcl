@@ -104,14 +104,14 @@
 #define  _bkconstexpr20 constexpr
 
 #ifdef _MSC_VER
-#define _bk_empty_adress [[msvc::no_unique_address]]
+#define _bkemptyaddress
 #else
 #define _bkemptyaddress [[no_unique_address]]
 #endif
 
 #else
 #define _bkconstexpr20
-#define _bk_empty_adress
+#define _bkemptyaddress
 #endif
 
 #if _BKHASCXX23
