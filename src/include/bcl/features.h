@@ -1,5 +1,6 @@
 #pragma once
 
+
 #if __cplusplus >= 2011
 #define _BCLHASCXX11 1
 #endif
