@@ -357,7 +357,7 @@ private:
   _Type* cur;
   uint8_t sentinel;
   _Type inline_dat[_inline_max];
-  _BCLEMPTYADRESS _Allocator allocator;
+  _bkemptyaddress _Allocator allocator;
 
 
 _BCLCONSTEXPR11 void construct(_Type* begin, _Type* end){
