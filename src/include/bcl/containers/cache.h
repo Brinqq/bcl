@@ -4,8 +4,12 @@
 #include "bcl/features.h"
 
 #include <memory>
+#include <algorithm>
+
 
 namespace bk{
+
+//FUTURE: Descide if we want to update ages on find() hits.
 
 /**
  * \class in_cache
@@ -18,17 +22,20 @@ namespace bk{
 template<typename _Key, typename _Entry, size_t _Max>
 class in_cache{
 private:
-  // probably shouldnt be this high anyways tbh.
-  static_assert(_Max < 256, "Max cache size is 256");
+
+  static_assert(
+    _Max < 64 &&
+    std::is_copy_constructible_v<_Entry> &&
+    std::is_copy_assignable_v<_Entry> &&
+    std::is_trivially_destructible_v<_Key>
+  ,"Error");
+
+  typedef uint8_t _OffsetType;
 
   _Key keys[_Max];
   _Entry entries[_Max];
-  uint8_t age[_Max];
-
-  uint8_t count;
-  
-
-  int x = sizeof(in_cache<int, int, 32>);
+  _OffsetType age[_Max]; //sorted by age new -> old, hold 0 based indices
+  _OffsetType count = 0;
 public:
 
 /**
@@ -66,44 +73,89 @@ size_t bytes() const{
  * \ret If a key was found.
  */
 _bknodiscard bool find(const _Key& key, _Entry* entry){
-  bool f = 0;
-  int i = 0;
-  //two pass here because branch/early return was preveting compiler
-  //auto vectorization,This may end up being slower for smaller caches sizes due
-  //to no early return.
-  for(; i < count; ++i){
-    if(key[i] == *key){
-      f = true;
+  int idx = -1;
+
+  //two pass here because branch/early-return was preveting the compiler from
+  //auto vectorizating the prob seqence, This may end up being slower for smaller caches sizes due
+  //to the no early return.
+  for(int i = 0; i < count; ++i){
+    if(keys[i] == key){
+      idx = i;
     }
   }
-  if(f){
-    *entry = entry[i];
+
+  if(idx != -1){
+    *entry = entries[idx];
     return true;
   }
+
   return false;
 }
 
-void insert(_Key& key, const _Entry& entry){
-  if((count += 1) == _Max){
+/**
+ * \fn insert
+ * \brief Inserts a new entry/key into the cache.
+ * \param _Key[in] - The Key used for mapping.
+ * \param _Entry*[in] - Entry copy src.
+ */
+void insert(const _Key& key, const _Entry& entry){
+  if(count == _Max){
+    int idx = age[_Max - 1];
+    entries[idx].~_Entry();
+    std::move_backward(age, age + (_Max - 1), age + (_Max));
+
+    new(entries + idx) _Entry(entry);
+    keys[idx] = key;
+    *age = idx;
     return;
   }
 
+  if(count > 0){
+    std::move_backward(age, age + count , age + (count + 1));
+  }
+
   _Entry* itr = entries + count;
-  new(itr) _Entry();
-  *itr = entry;
+  new(itr) _Entry(entry);
+  keys[count] = key;
+  age[0] = count;
   count++;
+}
+
+/**
+ * \fn modify_entry
+ * \brief Modifies the entry mapped by _Key
+ * \param _Key[in] - The key mapping.
+ * \param _Entry&[in] - Entry src we copy into cache.
+ * \note If key is not in cache already we insert a new entry,
+ *  this will invalidate the LRU entry.
+ */
+void modify_entry(const _Key& key, const _Entry& entry){
+  int idx = -1;
+
+  for(int i = 0 ;i < count; ++i){
+    if (keys[i] == key){
+      idx =  i;
+    };
+  }
+
+  if(idx != -1){
+    entries[idx] = entry;
+    return;
+  }
+
+  insert(key, entry);
 }
 
 
 /**
- * \fn invalidate_all
- * \brief Invalidates just the key/entry cache, Then shifts entire cache
+ * \fn invalidate_key
+ * \brief Invalidates just the key/entry in cache, Then shifts entire cache
  * \param _Key[in] - the key mapping to invalidate.
- * \note If key is not found we do nothing.
+ * \note If key is not found we do nothing. Since this is worse case O(n),
+ *  it is recommend _Entry is moveable.
  */
-void invalidate_key(){
-
-};
+// void invalidate_key(){
+// };
 
 /**
  * \fn invalidate_all
@@ -120,15 +172,23 @@ void invalidate_all(){
 }
 
 in_cache(){}
-~in_cache(){}
 
-// dont want these
+
+~in_cache(){
+  _Entry* s = entries;
+  _Entry* e = s + count;
+  while(s != e){
+    s->~_Entry();
+    s++;
+  }
+}
+
 in_cache(const in_cache& rhs) = delete;
 in_cache& operator=(const in_cache& rhs) = delete;
 in_cache(in_cache&& rhs) = delete;
 in_cache& operator=(in_cache&& rhs) = delete;
 
-
 };//class in_cache
 
 }//namespace bk
+ //
