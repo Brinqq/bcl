@@ -276,7 +276,7 @@ public:
     other._size = 0;
   }
 
-  _BCLCONSTEXPR20 ~fixed_vector(){dealloc();}
+  ~fixed_vector(){dealloc();}
 
   // TODO: implement these
   //explicit _BCLCONSTEXPR20 fixed_vector(uint32_t count, _Type&& mv):_size(count){} - impl
