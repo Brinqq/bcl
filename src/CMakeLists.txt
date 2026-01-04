@@ -21,21 +21,21 @@ set(INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include")
 set(ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 #platform specific
-if (WIN32)
-  list(APPEND CXX_FLAGS "-mavx" "-mavx2")
-  if(MSVC OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND CMAKE_BUILD_TYPE STREQUAL "Debug")
-        # Clang-MSVC: emit CodeView (PDB) debug info
-        list(APPEND CXX_FLAGS -gcodeview)
-  endif()
-endif()
+# if (WIN32)
+#   list(APPEND CXX_FLAGS "-mavx" "-mavx2")
+#   if(MSVC OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND CMAKE_BUILD_TYPE STREQUAL "Debug")
+#         # Clang-MSVC: emit CodeView (PDB) debug info
+#         list(APPEND CXX_FLAGS -gcodeview)
+#   endif()
+# endif()
 
 
-if (APPLE)
-  if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    # Other compilers: DWARF debug info
-    list(APPEND CXX_FLAGS -g3)
-  endif()
-endif()
+# if (APPLE)
+#   if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+#     # Other compilers: DWARF debug info
+#     list(APPEND CXX_FLAGS -g3)
+#   endif()
+# endif()
  
 
 if(BK_BUILD_DEV)
@@ -46,7 +46,7 @@ if(BK_BUILD_DEV)
   endif()
     list(APPEND SRC_FILES ../test/test.cpp)
     list(APPEND INCLUDE_DIRS "${ROOT_DIR}/test/headers/doctest")
-    list(APPEND CXX_FLAGS "-O0")
+    # list(APPEND CXX_FLAGS "-O0")
     add_executable(${PROJECT_NAME} ${SRC_FILES})
 else()
   add_library(${PROJECT_NAME} STATIC ${SRC_FILES})
