@@ -1,6 +1,5 @@
 set(src_files
     mem.cpp
-    virtualallocator.cpp
 )
 
 add_library(${PROJECT_NAME} ${src_files})
