@@ -25,5 +25,10 @@ inline void _assertion_failure(const char* file , const uint32_t line, const cha
 #define _bclassert(_expr)
 #define _bclassert_msg(_expr, _msg)
 #define _bclassert_tag(_expr, _tag)
+
+
+#define _bkassert(_expr)
+#define _bkassert_msg(_expr, _msg)
+#define _bkassert_tag(_expr, _tag)
 #endif
 
