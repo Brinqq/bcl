@@ -4,8 +4,5 @@
 //due to the forced absolute path not working for some reason that i dont care to fix.
 
 //containers
-#include "bcl/containers/densetable.h"
-#include "bcl/containers/tagptr.h"
-#include "bcl/containers/vector.h"
-#include "bcl/containers/freelist.h"
-#include "bcl/containers/pool.h"
+#include "bk/containers/tagptr.h"
+#include "bk/containers/vector.h"

@@ -1,23 +1,12 @@
 #include <stdio.h>
 
 // oprhan headers so clangd doesnt complain about missing compilation data base info on header only libs.
-#include "bcl/containers/densetable.h" // IWYU pragma: keep
-#include "bcl/containers/tagptr.h" // IWYU pragma: keep
-#include "bcl/containers/vector.h" // IWYU pragma: keep
-#include "bcl/containers/freelist.h" // IWYU pragma: keep
-#include "bcl/memory/virtualallocator.h" // IWYU pragma: keep
-#include "bcl/containers/span.h" //IWYU pragma: keep
-#include "bcl/containers/bucket.h"
 
-
-bk::span<int> x{};
-bk::bucket<uint64_t, 20> k{};
 
 #define DOCTEST_CONFIG_IMPLEMENT
 #include "doctest/doctest.h"
 
 //enabled test_modules
-#include "headers/bucket_test.h"
 
 int main(int argc, char** argv) {
     doctest::Context context;
