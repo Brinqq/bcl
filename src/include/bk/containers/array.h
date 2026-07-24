@@ -2,6 +2,7 @@
 #include "bk/defines.h"
 #include "bk/assert.h"
 #include "bk/memory/common.h"
+#include "bk/memory/system_allocator.h"
 
 namespace bk{
 
@@ -83,6 +84,7 @@ public:
   }
 
   // void swap(const dyn_array& rhs){}
+  
   // bool operator==(const dyn_array& rhs)noexcept{}
 
   _Type& operator[](size_t idx)noexcept{
