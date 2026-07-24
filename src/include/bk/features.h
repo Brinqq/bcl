@@ -2,6 +2,9 @@
 
 //TODO: fix MSVC compilation. MSVC Does not auto emit __cplusplus
 
+#if __cplusplus <= 201103L
+static_assert("Minimum supported ver CXX11");
+#endif
 
 #if __cplusplus >= 201103L
 #define _BKHASCXX11 1
