@@ -1,7 +1,7 @@
 #pragma once
 #include <stdint.h>
-#include "bcl/features.h"
-#include "bcl/sys/intrinw.h"
+#include "bk/features.h"
+#include "bk/sys/intrinw.h"
 
 namespace bk{
 

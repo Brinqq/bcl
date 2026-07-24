@@ -1,20 +1,22 @@
 #pragma once
 
+//TODO: fix MSVC compilation. MSVC Does not auto emit __cplusplus
 
-#if __cplusplus >= 2011
-#define _BCLHASCXX11 1
+
+#if __cplusplus >= 201103L
+#define _BKHASCXX11 1
 #endif
-#if __cplusplus >= 2014
-#define _BCLHASCXX14 1
+#if __cplusplus >= 201402L
+#define _BKHASCXX14 1
 #endif
-#if __cplusplus >= 2017
-#define _BCLHASCXX17 1
+#if __cplusplus >= 201703L
+#define _BKHASCXX17 1
 #endif
-#if __cplusplus >= 2020
-#define _BCLHASCXX20 1
+#if __cplusplus >= 202002L
+#define _BKHASCXX20 1
 #endif
-#if __cplusplus >= 2023
-#define _BCLHASCXX23 1
+#if __cplusplus >= 202302L
+#define _BKHASCXX23 1
 #endif
 
 
@@ -61,22 +63,6 @@
 #endif
 
 //---------------------------------
-#if __cplusplus >= 2011
-#define _BKHASCXX11 1
-#endif
-#if __cplusplus >= 2014
-#define _BKHASCXX14 1
-#endif
-#if __cplusplus >= 2017
-#define _BKHASCXX17 1
-#endif
-#if __cplusplus >= 2020
-#define _BKHASCXX20 1
-#endif
-#if __cplusplus >= 2023
-#define _BKHASCXX23 1
-#endif
-
 
 #if _BKHASCXX11
 #define  _bkconstexpr11 constexpr

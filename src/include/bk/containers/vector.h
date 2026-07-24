@@ -1,8 +1,8 @@
 #pragma once
 
-#include "bcl/features.h"
-#include "bcl/assert.h"
-#include "bcl/defines.h"
+#include "bk/features.h"
+#include "bk/assert.h"
+#include "bk/defines.h"
 
 #include <initializer_list>
 #include <algorithm>
@@ -23,7 +23,7 @@ private:
     new(addr) _Type();
   }
 
-  _BCLCONSTEXPR20 void construct(_Type* start, _Type*  end){
+  _bkconstexpr20 void construct(_Type* start, _Type*  end){
     _Type* cur = start;
     while(cur != end){
       new(cur) _Type(); 
@@ -33,7 +33,7 @@ private:
 
 
   template<typename ..._Val>
-  _BCLCONSTEXPR20 void _construct_back(_Val&& ...val){
+  _bkconstexpr20 void _construct_back(_Val&& ...val){
     new(end()) _Type(std::forward<_Val>(val)...);
     _size++;
   }
@@ -85,36 +85,36 @@ public:
   
   //start of public interface
 
-  _BCLCONSTEXPR20 _Type& at(size_t pos){
+  _bkconstexpr20 _Type& at(size_t pos){
     if(_size == 0 || pos > _size - 1){std::abort();}
     return _dat[pos];
   }
 
-   _BCLCONSTEXPR20 const _Type& at(size_t pos) const{
+   _bkconstexpr20 const _Type& at(size_t pos) const{
     if(_size == 0 || pos > _size - 1){std::abort();}
     return _dat[pos];
   }
 
-  _BCLCONSTEXPR20 _Type& operator[](size_t pos){return _dat[pos];}
-  _BCLCONSTEXPR20 _Type& front(){return _dat[0];}
-  _BCLCONSTEXPR20 _Type& back(){return _dat[_size - 1];}
-  _BCLCONSTEXPR20 _Type* data(){return _dat;};
+  _bkconstexpr20 _Type& operator[](size_t pos){return _dat[pos];}
+  _bkconstexpr20 _Type& front(){return _dat[0];}
+  _bkconstexpr20 _Type& back(){return _dat[_size - 1];}
+  _bkconstexpr20 _Type* data(){return _dat;};
 
-  _BCLCONSTEXPR20 const _Type& operator[](size_t pos)const{return _dat[pos];}
-  _BCLCONSTEXPR20 const _Type& front()const{return _dat[0];}
-  _BCLCONSTEXPR20 const _Type& back()const{return _dat[_size - 1];}
-  _BCLCONSTEXPR20 const _Type* data()const{return _dat;};
+  _bkconstexpr20 const _Type& operator[](size_t pos)const{return _dat[pos];}
+  _bkconstexpr20 const _Type& front()const{return _dat[0];}
+  _bkconstexpr20 const _Type& back()const{return _dat[_size - 1];}
+  _bkconstexpr20 const _Type* data()const{return _dat;};
 
-  _BCLCONSTEXPR20 bool empty()const{return _size == 0;}
-  _BCLCONSTEXPR20 size_t size()const{return static_cast<size_t>(_size);}
-  _BCLCONSTEXPR20 size_t max_size()const{return static_cast<size_t>(_Capacity);}
-  _BCLCONSTEXPR20 size_t capacity()const{return static_cast<size_t>(_Capacity);}
+  _bkconstexpr20 bool empty()const{return _size == 0;}
+  _bkconstexpr20 size_t size()const{return static_cast<size_t>(_size);}
+  _bkconstexpr20 size_t max_size()const{return static_cast<size_t>(_Capacity);}
+  _bkconstexpr20 size_t capacity()const{return static_cast<size_t>(_Capacity);}
 
-  _BCLCONSTEXPR20 _Type* begin()const{return _dat;}
-  _BCLCONSTEXPR20 _Type* end()const{return _dat + (_size);}
+  _bkconstexpr20 _Type* begin()const{return _dat;}
+  _bkconstexpr20 _Type* end()const{return _dat + (_size);}
 
-  _BCLCONSTEXPR20 const _Type* cbegin()const{return _dat;}
-  _BCLCONSTEXPR20 const _Type* cend()const{return _dat + (_size);}
+ _bkconstexpr20 const _Type* cbegin()const{return _dat;}
+ _bkconstexpr20 const _Type* cend()const{return _dat + (_size);}
 
 
   // standard vector functions(insert, erase, emplace, etc...) return iterators to combat vector growing and invalidating the immediate iterator,
@@ -127,12 +127,12 @@ public:
   // for multi element insertions we insert from pos intell we reach max size;
 
 
-  _BCLCONSTEXPR20 void clear(){
+  _bkconstexpr20 void clear(){
     deconstruct(begin(), end());
     _size = 0;
   };
 
-  _BCLCONSTEXPR20 _Type* insert(_Type* pos, const _Type& val){
+  _bkconstexpr20 _Type* insert(_Type* pos, const _Type& val){
     if(_size == _Capacity){return nullptr;}
     construct(end());
     std::move_backward(pos, end()-1, end());
@@ -141,7 +141,7 @@ public:
     return pos;
   }
 
- _BCLCONSTEXPR20 _Type* insert(_Type* pos, _Type&& val){
+ _bkconstexpr20 _Type* insert(_Type* pos, _Type&& val){
     if(_size == _Capacity){return nullptr;}
     construct(end());
     std::move_backward(pos, end()-1, end());
@@ -150,7 +150,7 @@ public:
     return pos;
   }
 
-  _BCLCONSTEXPR20 void assign(size_t count, _Type& val){
+  _bkconstexpr20 void assign(size_t count, _Type& val){
     _Type* rs = begin();
     _Type* re = begin() + (count + 1);
     construct(rs, re);
@@ -159,23 +159,23 @@ public:
   }
 
   template<class ..._Args>
- _BCLCONSTEXPR20 void emplace_back(_Args&&... args){
+ _bkconstexpr20 void emplace_back(_Args&&... args){
     if(_size == _Capacity){return;}
     _construct_back(args...);
   }
 
- _BCLCONSTEXPR20 void push_back(const _Type& val){
+ _bkconstexpr20 void push_back(const _Type& val){
     if(_size == _Capacity){return;}
     _construct_back(val);
   }
 
- _BCLCONSTEXPR20 void push_back(_Type&& val){
+ _bkconstexpr20 void push_back(_Type&& val){
     if(_size == _Capacity){return;}
     _construct_back(std::move(val));
   }
 
 
-  _BCLCONSTEXPR20 void resize(size_t size){
+  _bkconstexpr20 void resize(size_t size){
     if(size >= _Capacity){return;}
     _Type* s;
     _Type* e;
@@ -198,21 +198,21 @@ public:
   }
 
 
- _BCLCONSTEXPR20 void pop_back(){
+ _bkconstexpr20 void pop_back(){
     if(_size == 0){return;}
     deconstruct(end() - 1);
     _size--;
   }
 
   // non stl methods
-  _BCLCONSTEXPR20 bool full()const{return _size == _Capacity;}
+  _bkconstexpr20 bool full()const{return _size == _Capacity;}
     void erase_swap(_Type* pos){
     std::swap(*pos, *(end() - 1));
     pop_back();
   }
 
   // extension of erase_swap, inserts at end then swaps with pos iterator.
- _BCLCONSTEXPR20 void insert_swap(_Type* pos, const _Type& val){
+ _bkconstexpr20 void insert_swap(_Type* pos, const _Type& val){
     _bclassert_msg(_size  + 1 > _Capacity, "Vector at max capacity.");
     _construct_back(val);
     std::swap(*pos, *(end() - 1));
@@ -226,23 +226,23 @@ public:
 
 
   //constructers
- _BCLCONSTEXPR20 fixed_vector():_dat(0), _size(0){
+ _bkconstexpr20 fixed_vector():_dat(0), _size(0){
     alloc();
   }
 
-   explicit _BCLCONSTEXPR20 fixed_vector(uint32_t count):_size(count){
+   explicit _bkconstexpr20 fixed_vector(uint32_t count):_size(count){
      _bclassert_msg(count <= _Capacity, "fixed vector inistantiated with a size greater than fixed capacity");
      alloc();
      construct(begin(), end());
    }
 
-   explicit _BCLCONSTEXPR20 fixed_vector(uint32_t count, const _Type& cpy):_size(count){
+   explicit _bkconstexpr20 fixed_vector(uint32_t count, const _Type& cpy):_size(count){
       alloc();
       construct(begin(), end());
       copy(begin(), end(), cpy);
    }
 
-   explicit _BCLCONSTEXPR20 fixed_vector( _Type* rs,  _Type* re){
+   explicit _bkconstexpr20 fixed_vector( _Type* rs,  _Type* re){
     _bclassert_msg((re - rs) <= _Capacity, "range extendes past the max capacity of fixed vector.");
     alloc();
     _Type* cur = begin();
@@ -256,7 +256,7 @@ public:
     _size  = re - rs;
    }
 
-   explicit _BCLCONSTEXPR20 fixed_vector(std::initializer_list<_Type> ilist){
+   explicit _bkconstexpr20 fixed_vector(std::initializer_list<_Type> ilist){
     _bclassert_msg(ilist.size() <= _Capacity, "initializer list size is greater than max capacity.");
     alloc();
     _Type* cur = begin();
@@ -269,7 +269,7 @@ public:
    }
 
 
-  _BCLCONSTEXPR20 fixed_vector(fixed_vector&& other){
+  _bkconstexpr20 fixed_vector(fixed_vector&& other){
     this->_dat = other._dat;
     this->_size = other._size;
     other._dat = nullptr;
@@ -279,8 +279,8 @@ public:
   ~fixed_vector(){dealloc();}
 
   // TODO: implement these
-  //explicit _BCLCONSTEXPR20 fixed_vector(uint32_t count, _Type&& mv):_size(count){} - impl
-  // _BCLCONSTEXPR20 fixed_vector(const fixed_vector& other){}
+  //explicit _bkconstexpr20 fixed_vector(uint32_t count, _Type&& mv):_size(count){} - impl
+  // _bkconstexpr20 fixed_vector(const fixed_vector& other){}
   // _Type* insert(_Type* pos, size_t count, const _Type& val){} -- impl
   // _Type* insert(_Type* pos, std::initializer_list<_Type> ilist){} -- impl
   // template<typename _Ittype> _Type* insert(_Type* pos, _Ittype start, _Ittype last){} -- impl
@@ -294,7 +294,7 @@ public:
 protected:
   // this sets internal buffer to a ptr w/ preallocated memory. used mainly for a inline vector subclass.
   // if a object is constructed with this, insure the base classes deconstructer is never called or it will try to free a random pointer.
-  _BCLCONSTEXPR20 fixed_vector(_Type* dat):_dat(dat), _size(0){}
+  _bkconstexpr20 fixed_vector(_Type* dat):_dat(dat), _size(0){}
 
 }; //fixed_vector
   
@@ -349,8 +349,8 @@ template<typename _Type, uint32_t _inline_max = 5, typename _Allocator = std::al
 class small_vector{
 private:
 
-  static _BCLCONSTEXPR11 float _growth_factor = 1.5;
-  static _BCLCONSTEXPR11 bool _memcpyable = std::is_trivially_copyable_v<_Type> && std::is_trivially_assignable_v<_Type, _Type>;
+static _bkconstexpr11 float _growth_factor = 1.5;
+static _bkconstexpr11 bool _memcpyable = std::is_trivially_copyable_v<_Type> && std::is_trivially_assignable_v<_Type, _Type>;
 
   _Type* dat;
   _Type* cap;
@@ -375,7 +375,7 @@ _BCLCONSTEXPR11 void deconstruct(_Type* begin, _Type* end){
 }
 
 _BCLCONSTEXPR11 void copy(const _Type* begin, const _Type* end, _Type* dst){
-  if _BCLCONSTEXPR14(_memcpyable){
+  if _bkconstexpr14(_memcpyable){
     size_t width = (begin - (end - 1)) * sizeof(_Type);
     memcpy(dst, begin, width);
 

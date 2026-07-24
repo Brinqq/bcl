@@ -1,7 +1,7 @@
 #pragma once
 
-#include "bcl/assert.h"
-#include "bcl/features.h"
+#include "bk/assert.h"
+#include "bk/features.h"
 
 #include <stdint.h>
 
@@ -57,7 +57,7 @@ private:
   
   }
 
-   _BCLCONSTEXPR20 uintptr_t mask_range(const uint8_t low, const uint8_t high)const{
+   _bkconstexpr20 uintptr_t mask_range(const uint8_t low, const uint8_t high)const{
   
    _bclassert((low >= BCL_TAG_LOW_MIN && high <= BCL_TAG_LOW_MAX) ||
               (low >= BCL_TAG_HIGH_MIN && high <= BCL_TAG_HIGH_MAX) 

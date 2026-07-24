@@ -1,8 +1,8 @@
 #pragma once
 
 #include <memory>
-#include "bcl/memory/bkmemory.h"
-#include "bcl/features.h"
+#include "bk/memory/bkmemory.h"
+#include "bk/features.h"
 
 #if !defined(_WIN32) && !defined(__linux__) && !defined(__APPLE__)
 #error uknown operating system cannot generate a valid implementation.

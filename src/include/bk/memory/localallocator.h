@@ -1,7 +1,7 @@
 #pragma once
 
-#include "bcl/memory/bkmemory.h"
-#include "bcl/features.h"
+#include "bk/memory/bkmemory.h"
+#include "bk/features.h"
 
 
 #include <memory>
@@ -13,14 +13,14 @@ template<size_t _Bytes,
          typename _Allocator = std::allocator<byte>>
 class local_allocator{
 private:
-  static _BCLCONSTEXPR11 uint8_t _Alignment = 16;
-  static _BCLCONSTEXPR11 size_t _Aligned_Heap_Size = bcl::aligned_size(_Fallback_size, _Alignment);
+  static _bkconstexpr11 uint8_t _Alignment = 16;
+  static _bkconstexpr11 size_t _Aligned_Heap_Size = bcl::aligned_size(_Fallback_size, _Alignment);
 
   byte* cur;
   byte* end;
   alignas(_Alignment) char dat[_Bytes];
   uint8_t overflow = 0;
-  _BCLEMPTYADRESS _Allocator fallback_allocator;
+  _bkemptyaddress _Allocator fallback_allocator;
 
 
 public:
@@ -65,7 +65,7 @@ public:
 * \warning \ref stack_overflow
 *
 */
-  _BCLNODISCARD _BCLCONSTEXPR11 void* allocate(size_t bytes){
+  _BCLNODISCARD _bkconstexpr11 void* allocate(size_t bytes){
     if(!can_allocate(bytes)){
 
       if(overflowed()){
@@ -92,7 +92,7 @@ public:
 *
 */
   template<typename _Type>
- _BCLNODISCARD _BCLCONSTEXPR11 _Type* allocate(uint64_t count){
+ _BCLNODISCARD _bkconstexpr11 _Type* allocate(uint64_t count){
     _Type* ret;
     ret = (_Type*)allocate(sizeof(_Type) * count);
 
