@@ -6,3 +6,4 @@ compile_commands.json
 .env
 docs/html/
 docs/latex/
+test/headers/doctest
