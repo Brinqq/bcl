@@ -4,7 +4,7 @@
 namespace bk{
 
 // HeapRef is a non owning wrapper around a runtime allocator. Allocators are often
-// to large and complicated to store inline in systems and or copy around. This class allows
+// to large and complicated to store inline in containers and or copy around. This class allows
 // the user to pass around references to a allocator while being complicit with the allocator interface.
 template<typename _Allocator>
 class HeapRef{

@@ -11,6 +11,6 @@ namespace bk{
 *   std::conditional_t(bool, SomeStruct, bcl::monostate);
 *  \endcode
 */
-struct Monostate;
+struct Monostate{};
 
 }

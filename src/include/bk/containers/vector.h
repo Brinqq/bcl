@@ -4,6 +4,7 @@
 #include "bk/assert.h"
 #include "bk/defines.h"
 
+#include <cmath>
 #include <initializer_list>
 #include <algorithm>
 
@@ -640,3 +641,50 @@ public:
 
 
 } // bcl
+
+
+// template<typename _Type, typename storage> 
+// struct vector_base{
+//   storage storage;
+// };
+//
+// template<typename _Type>
+// class hybrid_storage{
+//   _Type* dat;
+//   _Type* cur;
+//   _Type* en;
+//
+// public:
+//   constexpr bool grow(){}
+//
+// };
+//
+// template<typename _Type, size_t _Count>
+// class inline_storage{
+//   _Type dat[_Count];
+//   _Type* cur;
+//
+//
+// public:
+//   constexpr bool grow(){return false;}
+//
+// };
+//
+//
+// template<typename _Type> using small_vec = vector_base<_Type, hybrid_storage<_Type>>;
+//
+// small_vec<int> a;
+//
+// class fixed_Vec{
+//
+// };
+//
+// class small_vec{
+//
+// };
+//
+// class vec{
+//
+// };
+//
+//

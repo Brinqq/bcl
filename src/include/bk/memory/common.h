@@ -78,5 +78,5 @@ void copy_range(_Type& begin, _Type* end, const _Type& val)noexcept{
 
 // template<typename _Type>
 // void move_range(){}
-
+//
 }
