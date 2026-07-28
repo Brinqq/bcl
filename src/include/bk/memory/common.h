@@ -1,9 +1,11 @@
 #pragma once
+
 #include "type_traits"
 #include "bk/defines.h"
 
 
 namespace bk{
+
 /**
  * \code
  *  template<typename _Type = Monostate>
@@ -14,7 +16,7 @@ namespace bk{
 */  
 template<typename _Type, bool = std::is_empty<_Type>::value && !std::is_final<_Type>::value>
 class Nullable : private _Type{
-  Nullable() = default;
+  Empty() = default;
   _Type& value(){
     return *this;
   }
@@ -22,7 +24,7 @@ class Nullable : private _Type{
   const _Type& value()const{
     return *this;
   }
-};
+}
 
 template<typename _Type>
 class Nullable<_Type, false>{
@@ -39,7 +41,6 @@ public:
   }
 
 };
-
 
 
 //TODO: Add constexpr is_trivial<_Type> check to remove the loops entirly.
