@@ -1,8 +1,9 @@
 #pragma once
 
 //TODO: fix MSVC compilation. MSVC Does not auto emit __cplusplus
+//TODO: Switch to feature macros
 
-static_assert(__cplusplus >= 201103L, "Minimum version required C++11");
+static_assert(__cplusplus >= 201402L, "Minimum version required C++14");
 
 
 #if __cplusplus >= 201103L
