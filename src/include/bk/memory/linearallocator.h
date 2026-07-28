@@ -16,7 +16,7 @@ namespace bk{
 template<size_t _Align>
 class LinearAllocator{
 private:
-  static_assert(IsPowerOfTwo(_Align), "Alignment must be a power of 2\n");
+  static_assert(check_power2(_Align), "Alignment must be a power of 2\n");
 
   bk::byte* mStart;
   bk::byte* mCur;

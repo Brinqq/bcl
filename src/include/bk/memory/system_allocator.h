@@ -1,6 +1,7 @@
 #pragma once
 #include "bk/defines.h"
 #include "bk/features.h"
+#include <memory>
 
 class SystemAllocator{
 public:
