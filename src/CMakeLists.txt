@@ -1,5 +1,6 @@
 set(src_files
     mem.cpp
+    memory/transient_heap.cpp
 )
 
 add_library(${PROJECT_NAME} ${src_files})
